@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Extensions\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
@@ -16,6 +17,12 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="3.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="3.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MyMovies.BLL\MyMovies.BLL.csproj" />
+    <ProjectReference Include="..\MyMovies.DAL\MyMovies.DAL.csproj" />
+    <ProjectReference Include="..\MyMovies.Domain\MyMovies.Domain.csproj" />
   </ItemGroup>
 
 </Project>

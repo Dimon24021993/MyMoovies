@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using MyMovies.API.Config;
+using MyMovies.DAL;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace MyMovies.API
@@ -60,7 +62,7 @@ namespace MyMovies.API
 
             //services.AddTransient<ICatalogService, CatalogService>(provider => new CatalogService(Configuration.GetConnectionString("sqlConn")));
 
-
+            services.AddDbContext<DataBaseContext>(options => options.UseSqlServer(Configuration.GetSection("Connections")["DataBase"]));
             services.Configure<IISOptions>(options =>
             {
                 options.ForwardClientCertificate = false;
@@ -91,7 +93,7 @@ namespace MyMovies.API
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "MyMovies API V1");
             });
             app.UseHttpsRedirection();
             app.UseStaticFiles();
