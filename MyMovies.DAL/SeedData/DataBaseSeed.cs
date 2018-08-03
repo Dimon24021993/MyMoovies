@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using MyMovies.Domain.Entities;
-
-namespace MyMovies.DAL.SeedData
+﻿namespace MyMovies.DAL.SeedData
 {
     internal static class DataBaseSeed
     {
