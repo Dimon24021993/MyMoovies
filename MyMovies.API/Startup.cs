@@ -13,7 +13,7 @@ using Swashbuckle.AspNetCore.Swagger;
 
 namespace MyMovies.API
 {
-    public class Startup
+    public class Startup//test
     {
         public Startup(IHostingEnvironment env)
         {
