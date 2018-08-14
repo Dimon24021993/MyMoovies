@@ -25,8 +25,7 @@ namespace MyMovies.DAL
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-
-            optionsBuilder.UseSqlServer(@"Data Source=109.251.203.58;Initial Catalog=cars;User Id=MyMovies;Password=356v7hnCTWyhFa3A;Max Pool Size=2048;Pooling=true;MultipleActiveResultSets=True;");
+            optionsBuilder.UseSqlServer(@"Data Source=localhost;Initial Catalog=MyMovies;User Id=MyMovies;Password=356v7hnCTWyhFa3A;Max Pool Size=2048;Pooling=true;MultipleActiveResultSets=True;");
         }
     }
 }
