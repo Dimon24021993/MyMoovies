@@ -10,8 +10,8 @@ using MyMovies.DAL;
 namespace MyMovies.DAL.Migrations
 {
     [DbContext(typeof(DataBaseContext))]
-    [Migration("20180804095403_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20180814145959_initial-comit")]
+    partial class initialcomit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -38,13 +38,43 @@ namespace MyMovies.DAL.Migrations
 
                     b.HasKey("DescriptionId");
 
+                    b.HasIndex("MovieId");
+
                     b.ToTable("Descriptions");
+                });
+
+            modelBuilder.Entity("MyMovies.Domain.Entities.Job", b =>
+                {
+                    b.Property<Guid>("JobId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("JobType");
+
+                    b.Property<Guid>("MovieId");
+
+                    b.Property<Guid>("PersonId");
+
+                    b.HasKey("JobId");
+
+                    b.HasIndex("MovieId");
+
+                    b.HasIndex("PersonId");
+
+                    b.ToTable("Jobs");
                 });
 
             modelBuilder.Entity("MyMovies.Domain.Entities.Movie", b =>
                 {
                     b.Property<Guid>("MovieId")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Country");
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<TimeSpan>("Duration");
+
+                    b.Property<string>("OriginalName");
 
                     b.Property<decimal>("Rate");
 
@@ -55,6 +85,22 @@ namespace MyMovies.DAL.Migrations
                     b.ToTable("Movies");
                 });
 
+            modelBuilder.Entity("MyMovies.Domain.Entities.Person", b =>
+                {
+                    b.Property<Guid>("PersonId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("Birthday");
+
+                    b.Property<bool>("Male");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("PersonId");
+
+                    b.ToTable("Persons");
+                });
+
             modelBuilder.Entity("MyMovies.Domain.Entities.Tag", b =>
                 {
                     b.Property<Guid>("TagId")
@@ -62,11 +108,15 @@ namespace MyMovies.DAL.Migrations
 
                     b.Property<int>("AccessLevel");
 
+                    b.Property<int>("Language");
+
                     b.Property<Guid>("MovieId");
 
                     b.Property<string>("TagText");
 
                     b.HasKey("TagId");
+
+                    b.HasIndex("MovieId");
 
                     b.ToTable("Tags");
                 });
@@ -95,6 +145,35 @@ namespace MyMovies.DAL.Migrations
                     b.HasIndex("UserId1");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("MyMovies.Domain.Entities.Description", b =>
+                {
+                    b.HasOne("MyMovies.Domain.Entities.Movie")
+                        .WithMany("Descriptions")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MyMovies.Domain.Entities.Job", b =>
+                {
+                    b.HasOne("MyMovies.Domain.Entities.Movie")
+                        .WithMany("Jobs")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("MyMovies.Domain.Entities.Person")
+                        .WithMany("Jobs")
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MyMovies.Domain.Entities.Tag", b =>
+                {
+                    b.HasOne("MyMovies.Domain.Entities.Movie")
+                        .WithMany("Tags")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("MyMovies.Domain.Entities.User", b =>

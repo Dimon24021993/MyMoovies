@@ -5,16 +5,15 @@ using MyMovies.Domain.Enums;
 
 namespace MyMovies.Domain.Entities
 {
-    public class Tag
+    public class Job
     {
-        [Required]
-        public Guid TagId { get; set; }
-        [Required]
+        [Key]
+        public Guid JobId { get; set; }
         [ForeignKey("Movie")]
         public Guid MovieId { get; set; }
-        public string TagText { get; set; }
-        public AccessLevel AccessLevel { get; set; }
-        public Language Language { get; set; }
+        [ForeignKey("Person")]
+        public Guid PersonId { get; set; }
+        public JobType JobType { get; set; }
 
     }
 }
