@@ -21,13 +21,9 @@ namespace MyMovies.Parser
         public AsyncProducerConsumerQueue(Action<T> consumer, string identity, int threadNumber = 1)
         {
             tasks = new List<Task>();
-            if (consumer == null)
-            {
-                throw new ArgumentNullException(nameof(consumer));
-            }
 
             Identity = identity;
-            m_consumer = consumer;
+            m_consumer = consumer ?? throw new ArgumentNullException(nameof(consumer));
             m_queue = new BlockingCollection<T>(new ConcurrentQueue<T>());
             m_cancelTokenSrc = new CancellationTokenSource();
             for (int i = 0; i < threadNumber; i++)
