@@ -26,7 +26,7 @@ namespace MyMovies.Parser
 
             Multiplex.ParseMultiplex();
             Kinogo.ParseKinogo();
-
+            
             Console.ReadKey();
         }
 

@@ -27,14 +27,9 @@ namespace MyMovies.Parser.Sites
                 {
                     ParseMultiplexMovie(ref client, item);
                 }
-
-
             }
-
             Console.WriteLine($"Added {Movies} movies");
             Console.WriteLine("Done Parse Multiplex!");
-            Console.ReadKey();
-
         }
 
         private static void ParseMultiplexMovie(ref HttpClient client, string x)
