@@ -1,17 +1,16 @@
-﻿using MyMovies.Domain.Enums;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyMovies.Domain.Entities
 {
-    public class Description : Entity
+    public class Comment : Entity
     {
-        [ForeignKey("MovieId")]
         public Guid MovieId { get; set; }
-        public string MovieName { get; set; }
-        public Language Language { get; set; }
-        public string DescriptionText { get; set; }
+        [ForeignKey("MovieId")]
+        public Movie Movie { get; set; }
+        public string Text { get; set; }
+        public DateTime CreatedTime { get; set; }
         public Guid UserId { get; set; }
         [ForeignKey("UserId")]
         public User User { get; set; }

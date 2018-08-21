@@ -5,10 +5,8 @@ using MyMovies.Domain.Enums;
 
 namespace MyMovies.Domain.Entities
 {
-    public class Tag
+    public class Tag : Entity
     {
-        [Required]
-        public Guid TagId { get; set; }
         [Required]
         [ForeignKey("Movie")]
         public Guid MovieId { get; set; }

@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyMovies.Domain.Entities
 {
-    public class Movie
+    public class Movie : Entity
     {
-        [Key]
-        [Required]
-        public Guid MovieId { get; set; }
         public decimal Rate { get; set; }
         public int RatedPeople { get; set; }
         public string OriginalName { get; set; }

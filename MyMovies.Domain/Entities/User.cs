@@ -6,11 +6,8 @@ using MyMovies.Domain.Enums;
 
 namespace MyMovies.Domain.Entities
 {
-    public class User
+    public class User : Entity
     {
-        [Key]
-        [Required]
-        public Guid UserId { get; set; }
         public string UserName { get; set; }
         [Required]
         public string Login { get; set; }
@@ -20,6 +17,6 @@ namespace MyMovies.Domain.Entities
         [Required]
         public Language Language { get; set; }
 
-        public virtual List<User> Friends { get; set; }
+       // public virtual List<User> Friends { get; set; }
     }
 }

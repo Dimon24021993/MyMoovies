@@ -1,10 +1,10 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NLog;
 
 namespace MyMovies.Parser
 {
@@ -44,7 +44,10 @@ namespace MyMovies.Parser
 
         public void Produce(T value)
         {
-            if (!m_queue.Contains(value) && !InProgress.Contains(value)) m_queue.Add(value);
+            if (!m_queue.Contains(value) && !InProgress.Contains(value))
+            {
+                m_queue.Add(value);
+            }
         }
         public bool? IsAlive
         {
@@ -75,7 +78,7 @@ namespace MyMovies.Parser
             }
         }
 
-        public int QueueCount => m_queue.Count;
+        public int QueueCount => m_queue.Count + InProgress.Count;
         private void ConsumeLoop(CancellationToken cancelToken)
         {
             //logger.Info($"Thread start - {Identity}/{Thread.CurrentThread.ManagedThreadId}");

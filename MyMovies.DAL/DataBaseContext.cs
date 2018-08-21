@@ -19,10 +19,12 @@ namespace MyMovies.DAL
         public DbSet<Description> Descriptions { get; set; }
         public DbSet<Person> Persons { get; set; }
         public DbSet<Job> Jobs { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
+            //modelBuilder.Entity<Description>().
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

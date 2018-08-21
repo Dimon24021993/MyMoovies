@@ -10,8 +10,8 @@ using MyMovies.DAL;
 namespace MyMovies.DAL.Migrations
 {
     [DbContext(typeof(DataBaseContext))]
-    [Migration("20180814145959_initial-comit")]
-    partial class initialcomit
+    [Migration("20180820081603_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,9 +21,31 @@ namespace MyMovies.DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("MyMovies.Domain.Entities.Comment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedTime");
+
+                    b.Property<Guid>("MovieId");
+
+                    b.Property<string>("Text");
+
+                    b.Property<Guid>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MovieId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments");
+                });
+
             modelBuilder.Entity("MyMovies.Domain.Entities.Description", b =>
                 {
-                    b.Property<Guid>("DescriptionId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("DescriptionText");
@@ -36,16 +58,18 @@ namespace MyMovies.DAL.Migrations
 
                     b.Property<Guid>("UserId");
 
-                    b.HasKey("DescriptionId");
+                    b.HasKey("Id");
 
                     b.HasIndex("MovieId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Descriptions");
                 });
 
             modelBuilder.Entity("MyMovies.Domain.Entities.Job", b =>
                 {
-                    b.Property<Guid>("JobId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("JobType");
@@ -54,7 +78,7 @@ namespace MyMovies.DAL.Migrations
 
                     b.Property<Guid>("PersonId");
 
-                    b.HasKey("JobId");
+                    b.HasKey("Id");
 
                     b.HasIndex("MovieId");
 
@@ -65,7 +89,7 @@ namespace MyMovies.DAL.Migrations
 
             modelBuilder.Entity("MyMovies.Domain.Entities.Movie", b =>
                 {
-                    b.Property<Guid>("MovieId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Country");
@@ -80,30 +104,30 @@ namespace MyMovies.DAL.Migrations
 
                     b.Property<int>("RatedPeople");
 
-                    b.HasKey("MovieId");
+                    b.HasKey("Id");
 
                     b.ToTable("Movies");
                 });
 
             modelBuilder.Entity("MyMovies.Domain.Entities.Person", b =>
                 {
-                    b.Property<Guid>("PersonId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("Birthday");
 
-                    b.Property<bool>("Male");
+                    b.Property<int>("Gender");
 
                     b.Property<string>("Name");
 
-                    b.HasKey("PersonId");
+                    b.HasKey("Id");
 
                     b.ToTable("Persons");
                 });
 
             modelBuilder.Entity("MyMovies.Domain.Entities.Tag", b =>
                 {
-                    b.Property<Guid>("TagId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("AccessLevel");
@@ -114,7 +138,7 @@ namespace MyMovies.DAL.Migrations
 
                     b.Property<string>("TagText");
 
-                    b.HasKey("TagId");
+                    b.HasKey("Id");
 
                     b.HasIndex("MovieId");
 
@@ -123,7 +147,7 @@ namespace MyMovies.DAL.Migrations
 
             modelBuilder.Entity("MyMovies.Domain.Entities.User", b =>
                 {
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Email");
@@ -136,15 +160,24 @@ namespace MyMovies.DAL.Migrations
                     b.Property<string>("Password")
                         .IsRequired();
 
-                    b.Property<Guid?>("UserId1");
-
                     b.Property<string>("UserName");
 
-                    b.HasKey("UserId");
-
-                    b.HasIndex("UserId1");
+                    b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("MyMovies.Domain.Entities.Comment", b =>
+                {
+                    b.HasOne("MyMovies.Domain.Entities.Movie", "Movie")
+                        .WithMany()
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("MyMovies.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("MyMovies.Domain.Entities.Description", b =>
@@ -153,16 +186,21 @@ namespace MyMovies.DAL.Migrations
                         .WithMany("Descriptions")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("MyMovies.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("MyMovies.Domain.Entities.Job", b =>
                 {
-                    b.HasOne("MyMovies.Domain.Entities.Movie")
+                    b.HasOne("MyMovies.Domain.Entities.Movie", "Movie")
                         .WithMany("Jobs")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("MyMovies.Domain.Entities.Person")
+                    b.HasOne("MyMovies.Domain.Entities.Person", "Person")
                         .WithMany("Jobs")
                         .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -174,13 +212,6 @@ namespace MyMovies.DAL.Migrations
                         .WithMany("Tags")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("MyMovies.Domain.Entities.User", b =>
-                {
-                    b.HasOne("MyMovies.Domain.Entities.User")
-                        .WithMany("Friends")
-                        .HasForeignKey("UserId1");
                 });
 #pragma warning restore 612, 618
         }

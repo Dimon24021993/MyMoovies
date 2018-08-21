@@ -1,19 +1,20 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using MyMovies.Domain.Enums;
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using MyMovies.Domain.Enums;
 
 namespace MyMovies.Domain.Entities
 {
-    public class Job
+    public class Job : Entity
     {
-        [Key]
-        public Guid JobId { get; set; }
-        [ForeignKey("Movie")]
-        public Guid MovieId { get; set; }
-        [ForeignKey("Person")]
-        public Guid PersonId { get; set; }
         public JobType JobType { get; set; }
+
+        public Guid MovieId { get; set; }
+        [ForeignKey("MovieId")]
+        public Movie Movie { get; set; }
+
+        public Guid PersonId { get; set; }
+        [ForeignKey("PersonId")]
+        public Person Person { get; set; }
 
     }
 }
