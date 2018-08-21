@@ -34,8 +34,6 @@ namespace MyMovies.Parser.DataBase
                 }
                 else
                 {
-                    movie = movieBase;
-
                     if (movieBase.Rate == 0M && movie.Rate > 0M)
                     {
                         movieBase.Rate = movie.Rate;
@@ -47,6 +45,7 @@ namespace MyMovies.Parser.DataBase
                     var descriptionBase = Context.Descriptions.FirstOrDefault(x => x.Language == description.Language && x.MovieName == description.MovieName);
                     if (descriptionBase == null)
                     {
+                        description.MovieId = movieBase.Id;
                         Context.Descriptions.Add(description);
                         Context.SaveChanges();
                     }
@@ -58,9 +57,12 @@ namespace MyMovies.Parser.DataBase
                     }
                     else
                     {
+                        description.MovieId = movieBase.Id;
                         Context.Descriptions.Add(description);
                         Context.SaveChanges();
                     }
+
+                    movie = movieBase;
                 }
             }
         }
@@ -93,10 +95,11 @@ namespace MyMovies.Parser.DataBase
             }
 
             Person person;
-            foreach (var name in personNames)
+            lock (Context)
             {
-                lock (Context)
+                foreach (var name in personNames)
                 {
+
                     person = Context.Persons.FirstOrDefault(p => p.Name == name.Trim());
                     if (person == null)
                     {
@@ -127,10 +130,11 @@ namespace MyMovies.Parser.DataBase
             }
 
             Tag tag;
-            foreach (var name in tagNames)
+            lock (Context)
             {
-                lock (Context)
+                foreach (var name in tagNames)
                 {
+
                     tag = Context.Tags.FirstOrDefault(p => p.TagText == name.Trim().ToLower());
                     if (tag == null)
                     {

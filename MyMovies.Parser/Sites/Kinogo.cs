@@ -28,7 +28,8 @@ namespace MyMovies.Parser.Sites
                 ParseKinogoPage(ref client, $"page/{i}/");
             }
 
-
+            Console.WriteLine($"Added {Movies} movies");
+            Console.WriteLine("Done Parse Kinogo!");
         }
 
         private static void ParseKinogoPage(ref HttpClient client, string href)
@@ -36,21 +37,13 @@ namespace MyMovies.Parser.Sites
             var items = client.GetDocument(href)
                            .QuerySelectorAll("h2.zagolovki a")
                            .Select(x => x.GetAttribute("href")).ToList();
-
             if (items.Any())
             {
-
                 foreach (var item in items)
                 {
                     ParseKinogoMovie(ref client, item);
                 }
-
-
             }
-
-            Console.WriteLine($"Added {Movies} movies");
-            Console.WriteLine("Done Parse Kinogo!");
-            Console.ReadKey();
         }
 
         private static void ParseKinogoMovie(ref HttpClient client, string href)
@@ -107,7 +100,7 @@ namespace MyMovies.Parser.Sites
                     Id = Guid.NewGuid(),
                     OriginalName = movieName,
                     Country = cred.FirstOrDefault(x => x.Key.TextContent == "Страна:").Value.Trim() ?? "",
-                    Date = DateTime.Parse(cred.FirstOrDefault(x => x.Key.TextContent.IndexOf("Премьера", StringComparison.Ordinal) > -1).Value),
+                    Date = DateTime.Parse(cred.FirstOrDefault(x => x.Key.TextContent?.IndexOf("Премьера", StringComparison.Ordinal) > -1).Value  ?? DateTime.Now.ToString("G")),
                     Duration = TimeSpan.Parse(cred.FirstOrDefault(x => x.Key.TextContent == "Продолжительность:").Value?.Trim() ?? "0"),
                     Rate = Convert.ToDecimal(new Regex("[a-zA-Z]+").Replace(rate, ""), CultureInfo.InvariantCulture) / 20.0M
                 };
