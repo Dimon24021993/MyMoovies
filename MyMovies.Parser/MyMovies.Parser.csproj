@@ -6,8 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="bin — копия\**" />
     <Compile Remove="Models\**" />
+    <EmbeddedResource Remove="bin — копия\**" />
     <EmbeddedResource Remove="Models\**" />
+    <None Remove="bin — копия\**" />
     <None Remove="Models\**" />
   </ItemGroup>
 

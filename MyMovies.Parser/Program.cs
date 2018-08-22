@@ -1,5 +1,6 @@
 ﻿using AngleSharp.Dom.Html;
 using AngleSharp.Parser.Html;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using MyMovies.DAL;
 using MyMovies.Parser.DataBase;
@@ -22,11 +23,10 @@ namespace MyMovies.Parser
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
             var configuration = builder.Build();
 
-            DbTasks.Context = new DataBaseContext(configuration.GetSection("Connections"));
-
+            DbTasks.Context = new DataBaseContext(new DbContextOptionsBuilder<DataBaseContext>().UseSqlServer(configuration.GetSection("Connections")["DataBase"]).Options);
             Multiplex.ParseMultiplex();
             Kinogo.ParseKinogo();
-            
+
             Console.ReadKey();
         }
 

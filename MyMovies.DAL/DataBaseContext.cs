@@ -1,16 +1,13 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using MyMovies.Domain.Entities;
 
 namespace MyMovies.DAL
 {
-    //[DbConfigurationType(typeof(MySqlEFConfiguration))]
     public class DataBaseContext : DbContext
     {
-        private IConfiguration Configuration { get; set; }
-        public DataBaseContext(IConfiguration configuration) : base()
+        public DataBaseContext(DbContextOptions<DataBaseContext> options) : base(options)
         {
-            this.Configuration = configuration;
+
         }
 
         public DbSet<User> Users { get; set; }
@@ -23,14 +20,7 @@ namespace MyMovies.DAL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
-            //modelBuilder.Entity<Description>().
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            //optionsBuilder.UseSqlServer(@"Data Source=localhost;Initial Catalog=MyMovies;User Id=MyMovies;Password=356v7hnCTWyhFa3A;Max Pool Size=2048;Pooling=true;MultipleActiveResultSets=True;");
-            optionsBuilder.UseSqlServer(@"Data Source=109.251.203.58;Initial Catalog=MyMovies;User Id=MyMovies;Password=356v7hnCTWyhFa3A;Max Pool Size=2048;Pooling=true;MultipleActiveResultSets=True;");
+            modelBuilder.Entity<Movie>().Property(x => x.Rate).HasColumnType("decimal(12,10)");
         }
     }
 }

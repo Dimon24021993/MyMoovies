@@ -34,7 +34,7 @@ namespace MyMovies.Parser.DataBase
                 }
                 else
                 {
-                    if (movieBase.Rate == 0M && movie.Rate > 0M)
+                    if (movieBase.Rate == 0.0M && movie.Rate > 0.0M)
                     {
                         movieBase.Rate = movie.Rate;
                         movieBase.RatedPeople = 1;
@@ -135,7 +135,7 @@ namespace MyMovies.Parser.DataBase
                 foreach (var name in tagNames)
                 {
 
-                    tag = Context.Tags.FirstOrDefault(p => p.TagText == name.Trim().ToLower());
+                    tag = Context.Tags.FirstOrDefault(p => p.TagText == name.Trim().ToLower() && p.MovieId == movieId && p.Language == language);
                     if (tag == null)
                     {
                         tag = new Tag()
