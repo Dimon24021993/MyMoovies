@@ -1,16 +1,17 @@
-﻿using MyMovies.DAL;
-using MyMovies.Domain.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using MyMovies.BLL.Interfaces;
+using MyMovies.DAL;
+using MyMovies.Domain.Entities;
 
-namespace MyMovies.BLL.Managers
+namespace MyMovies.BLL.Services
 {
-    public sealed class MoviesManager : EntitiesManager
+    public sealed class MoviesService : EntitiesService,IMoviesService
     {
-        public MoviesManager(DataBaseContext context) : base(context)
+        public MoviesService(DataBaseContext context) : base(context)
         {
 
         }
@@ -379,14 +380,14 @@ namespace MyMovies.BLL.Managers
         //    return Movie.Id;
         //}
 
-        public async Task SaveMovieAsync(Movie Movie)
+        public async Task SaveMovieAsync(Movie movie)
         {
-            await Save(Movie);
+            await Save(movie);
         }
 
-        public async Task DeleteMovieAsync(Guid MovieId)
+        public async Task DeleteMovieAsync(Guid movieId)
         {
-            await Delete<Movie>(MovieId);
+            await Delete<Movie>(movieId);
         }
 
         //public async Task<bool> DeleteMovieFullAsync(Guid id)
@@ -475,11 +476,11 @@ namespace MyMovies.BLL.Managers
 
         public async Task DeleteIncorrectMovies()
         {
-            var Movies = await GetIncorrectMoviesAsync();
+            var movies = await GetIncorrectMoviesAsync();
 
-            foreach (var Movie in Movies)
+            foreach (var movie in movies)
             {
-                await DeleteMovieAsync(Movie.Id);
+                await DeleteMovieAsync(movie.Id);
             }
         }
 

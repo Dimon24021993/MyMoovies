@@ -8,7 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using MyMovies.API.Config;
-using MyMovies.BLL.Managers;
+using MyMovies.BLL.Interfaces;
+using MyMovies.BLL.Services;
 using MyMovies.DAL;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -61,7 +62,7 @@ namespace MyMovies.API
             //services.AddTransient<IAccountService, AccountService>();
             //services.AddTransient<IUserService, UserService>();
 
-            services.AddTransient<MoviesManager>();
+            services.AddTransient<IMoviesService,MoviesService>();
 
             services.AddDbContext<DataBaseContext>(options => options.UseSqlServer(Configuration.GetSection("Connections")["DataBase"]));
 

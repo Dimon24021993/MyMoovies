@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MyMovies.BLL.Managers;
+using MyMovies.BLL.Interfaces;
 using MyMovies.DAL;
 using MyMovies.Domain.Entities;
 using Newtonsoft.Json;
@@ -15,27 +15,24 @@ namespace MyMovies.API.Controllers
     [ApiController]
     public class MoviesController : ControllerBase
     {
-        private readonly DataBaseContext _context;
-        private MoviesManager MoviesManager { get; set; }
-        public MoviesController(//DataBaseContext context,
-                                MoviesManager manager)
+        private readonly DataBaseContext db;
+        private IMoviesService MoviesService { get; set; }
+        public MoviesController(DataBaseContext dbContext, IMoviesService moviesService)
         {
-            _context = null;
-                //context;
-            MoviesManager = manager;
-            //new MoviesManager(context);
+            db = dbContext;
+            MoviesService = moviesService;
         }
 
         [HttpGet]
         public IEnumerable<Movie> GetMovies()
         {
-            return _context.Movies;
+            return db.Movies;
         }
 
         [HttpGet]
         public async Task<IEnumerable<Description>> GetMovieDescriptions(Guid movieId)
         {
-            return await MoviesManager.GetMovieDescriptions(movieId);
+            return await MoviesService.GetMovieDescriptions(movieId);
         }
 
         [HttpGet("{id}")]
@@ -47,7 +44,7 @@ namespace MyMovies.API.Controllers
             }
 
             var movie = //await _context.Movies.FindAsync(id);
-                await MoviesManager.GetMovieAsync(id, true);
+                await MoviesService.GetMovieAsync(id, true);
 
             if (movie == null)
             {
@@ -71,11 +68,11 @@ namespace MyMovies.API.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(movie).State = EntityState.Modified;
+            db.Entry(movie).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -100,8 +97,8 @@ namespace MyMovies.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            _context.Movies.Add(movie);
-            await _context.SaveChangesAsync();
+            db.Movies.Add(movie);
+            await db.SaveChangesAsync();
 
             return CreatedAtAction("GetMovie", new { id = movie.Id }, movie);
         }
@@ -114,21 +111,21 @@ namespace MyMovies.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var movie = await _context.Movies.FindAsync(id);
+            var movie = await db.Movies.FindAsync(id);
             if (movie == null)
             {
                 return NotFound();
             }
 
-            _context.Movies.Remove(movie);
-            await _context.SaveChangesAsync();
+            db.Movies.Remove(movie);
+            await db.SaveChangesAsync();
 
             return Ok(movie);
         }
 
         private bool MovieExists(Guid id)
         {
-            return _context.Movies.Any(e => e.Id == id);
+            return db.Movies.Any(e => e.Id == id);
         }
     }
 }

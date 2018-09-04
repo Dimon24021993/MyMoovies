@@ -1,24 +1,24 @@
-﻿using Microsoft.EntityFrameworkCore;
-using MyMovies.BLL.Common;
-using MyMovies.BLL.Exceptions;
-using MyMovies.DAL;
-using MyMovies.Domain.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using MyMovies.BLL.Common;
+using MyMovies.BLL.Exceptions;
+using MyMovies.DAL;
+using MyMovies.Domain.Entities;
 
-namespace MyMovies.BLL.Managers
+namespace MyMovies.BLL.Services
 {
-    public class EntitiesManager : IDisposable
+    public class EntitiesService : IDisposable
     {
         protected readonly DataBaseContext context;
 
         private bool _disposed;
 
-        protected EntitiesManager(DataBaseContext context)
+        protected EntitiesService(DataBaseContext context)
         {
             this.context = context;
         }
@@ -272,7 +272,7 @@ namespace MyMovies.BLL.Managers
             _disposed = true;
         }
 
-        ~EntitiesManager()
+        ~EntitiesService()
         {
             Dispose(false);
         }

@@ -1,9 +1,10 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
+using MyMovies.BLL.Interfaces;
 
-namespace MyMovies.BLL.Managers
+namespace MyMovies.BLL.Services
 {
-    public class ImageManager
+    public class ImageService: IImageService
     {
         private static string CarImagesPath => "";
         private static string ExternalDiagPath => "";
@@ -48,7 +49,7 @@ namespace MyMovies.BLL.Managers
         //    }
         //}
 
-        private async Task UploadImage(string path)//, Image image)
+        public async Task UploadImage(string path)//, Image image)
         {
             var imageBytes = new byte[0];// ImageFileConnector.ImageToByteArray(image);
 
