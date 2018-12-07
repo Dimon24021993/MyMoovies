@@ -19,7 +19,7 @@ namespace MyMovies.Parser.Sites
         public static void ParseKinogo()
         {
             var client = new HttpClient(new HttpClientHandler() { CookieContainer = new CookieContainer() })
-            { BaseAddress = new Uri("http://kinogo.cc") };
+            { BaseAddress = new Uri("http://kinogo.cc/") };
 
             var pages = Convert.ToInt32(client.GetDocument("").QuerySelector(".bot-navigation a:nth-last-child(2)").TextContent);
 
@@ -94,14 +94,15 @@ namespace MyMovies.Parser.Sites
                 #region Movie&Description
 
                 var rate = document.QuerySelector("ul[itemprop='rating'] li.current-rating").GetStyle("width");
+                var date = DateTime.TryParseExact(cred.FirstOrDefault(x => x.Key.TextContent?.IndexOf("Премьера", StringComparison.Ordinal) > -1).Value, "dd MMMM yyyy", CultureInfo.GetCultureInfo("RU-ru"), DateTimeStyles.AssumeLocal, out var ini);
 
                 var movie = new Movie()
                 {
                     Id = Guid.NewGuid(),
                     OriginalName = movieName,
                     Country = cred.FirstOrDefault(x => x.Key.TextContent == "Страна:").Value.Trim() ?? "",
-                    Date = DateTime.Parse(cred.FirstOrDefault(x => x.Key.TextContent?.IndexOf("Премьера", StringComparison.Ordinal) > -1).Value  ?? DateTime.Now.ToString("G")),
-                    Duration = TimeSpan.Parse(cred.FirstOrDefault(x => x.Key.TextContent == "Продолжительность:").Value?.Trim() ?? "0"),
+                    Date = date ? ini : DateTime.Now,
+                    Duration = TimeSpan.Parse(cred.FirstOrDefault(x => x.Key.TextContent == "Продолжительность:").Value?.Trim().Trim('~').Trim() ?? "0"),
                     Rate = Convert.ToDecimal(new Regex("[a-zA-Z]+").Replace(rate, ""), CultureInfo.InvariantCulture) / 20.0M
                 };
                 DbTasks.AddMovieAndDescriptionIntoDb(ref movie, ref Movies, new Description()
