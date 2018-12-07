@@ -24,9 +24,45 @@ namespace MyMovies.API.Controllers
         }
 
         [HttpGet]
+        public IEnumerable<Comment> GetComents()
+        {
+            return db.Comments;
+        }
+
+        [HttpGet]
+        public IEnumerable<Description> GetDescriptions()
+        {
+            return db.Descriptions;
+        }
+
+        [HttpGet]
+        public IEnumerable<Job> GetJobs()
+        {
+            return db.Jobs;
+        }
+
+        [HttpGet]
+        public IEnumerable<Person> GetPersons()
+        {
+            return db.Persons;
+        }
+
+        [HttpGet]
         public IEnumerable<Movie> GetMovies()
         {
             return db.Movies;
+        }
+
+        [HttpGet]
+        public IEnumerable<Tag> GetTags()
+        {
+            return db.Tags;
+        }
+
+        [HttpGet]
+        public IEnumerable<User> GetUsers()
+        {
+            return db.Users;
         }
 
         [HttpGet]
