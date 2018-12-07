@@ -80,7 +80,8 @@ namespace MyMovies.Parser.Sites
                     MovieId = movie.Id,
                     Language = Language.Ru,
                     MovieName = movieName,
-                    UserId = user.Id
+                    UserId = user.Id,
+                    DescriptionText = document.QuerySelector(".movie_description").TextContent
                 });
 
                 #endregion
