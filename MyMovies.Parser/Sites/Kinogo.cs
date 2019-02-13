@@ -19,7 +19,7 @@ namespace MyMovies.Parser.Sites
         public static void ParseKinogo()
         {
             var client = new HttpClient(new HttpClientHandler() { CookieContainer = new CookieContainer() })
-            { BaseAddress = new Uri("http://kinogo.cc/") };
+            { BaseAddress = new Uri("http://kinogo.cc/multfilmy/") };
 
             var pages = Convert.ToInt32(client.GetDocument("").QuerySelector(".bot-navigation a:nth-last-child(2)").TextContent);
 

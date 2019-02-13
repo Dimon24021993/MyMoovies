@@ -11,7 +11,6 @@ using MyMovies.API.Config;
 using MyMovies.BLL.Interfaces;
 using MyMovies.BLL.Services;
 using MyMovies.DAL;
-using Swashbuckle.AspNetCore.Swagger;
 
 namespace MyMovies.API
 {
@@ -62,7 +61,7 @@ namespace MyMovies.API
             //services.AddTransient<IAccountService, AccountService>();
             //services.AddTransient<IUserService, UserService>();
 
-            services.AddTransient<IMoviesService,MoviesService>();
+            services.AddTransient<IMoviesService, MoviesService>();
 
             services.AddDbContext<DataBaseContext>(options => options.UseSqlServer(Configuration.GetSection("Connections")["DataBase"]));
 
@@ -70,12 +69,18 @@ namespace MyMovies.API
             {
                 options.ForwardClientCertificate = false;
             });
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddSwaggerGen(c =>
+            //services.AddSwaggerGen(c =>
+            //{
+            //    c.SwaggerDoc("v1", new Info { Title = "MyMovies API", Version = "v1" });
+            //    // c.AddSecurityDefinition("token", new BasicAuthScheme());
+            //});
+            services.AddSwaggerDocument(settings =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "MyMovies API", Version = "v1" });
-                // c.AddSecurityDefinition("token", new BasicAuthScheme());
+                settings.DocumentName = "v1";
+                settings.Title = "MyMovies API";
+
             });
         }
 
@@ -93,7 +98,12 @@ namespace MyMovies.API
             {
                 app.UseHsts();
             }
-            app.UseSwagger();
+            app.UseSwagger(settings =>
+            {
+                settings.DocumentName = "v1";
+                settings.Path = "/swagger/{documentName}/swagger.json";
+
+            });
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "MyMovies API V1");

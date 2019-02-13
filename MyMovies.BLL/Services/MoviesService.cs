@@ -281,10 +281,11 @@ namespace MyMovies.BLL.Services
 
         public async Task SetMovieRate(Guid id, decimal rate)
         {
-            var Movie = await GetByIdAsync<Movie>(id);
-            Movie.Rate = rate;
-            Movie.RatedPeople++;
-            await Save(Movie);
+            return;
+            //var Movie = await GetByIdAsync<Movie>(id);
+            //Movie.Rate = rate;
+            //Movie.RatedPeople++;
+            //await Save(Movie);
         }
 
 

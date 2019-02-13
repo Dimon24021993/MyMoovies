@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using NLog.Web;
+
+//[assembly: ApiConventionType(typeof(DefaultApiConventions))]
 
 namespace MyMovies.API
 {

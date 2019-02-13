@@ -18,10 +18,11 @@ namespace MyMovies.DAL
         public DbSet<Job> Jobs { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Picture> Pictures { get; set; }
+        public DbSet<Rate> Rates { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Movie>().Property(x => x.Rate).HasColumnType("decimal(12,10)");
+            modelBuilder.Entity<Rate>().Property(x => x.Value).HasColumnType("decimal(12,10)");
         }
     }
 }
