@@ -13,9 +13,9 @@ namespace MyMovies.Domain.Entities
         [ForeignKey("MovieId")]
         public virtual Movie Movie { get; set; }
 
-        public Guid PersonId { get; set; }
-        [ForeignKey("PersonId")]
-        public virtual Person Person { get; set; }
+        public Guid UserId { get; set; }
+        [ForeignKey("UserId")]
+        public virtual User User { get; set; }
 
     }
 }
