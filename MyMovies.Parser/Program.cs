@@ -1,6 +1,4 @@
-﻿using AngleSharp.Dom.Html;
-using AngleSharp.Parser.Html;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using MyMovies.DAL;
 using MyMovies.Parser.DataBase;
@@ -9,6 +7,8 @@ using System;
 using System.IO;
 using System.Net.Http;
 using System.Text;
+using AngleSharp.Html.Dom;
+using AngleSharp.Html.Parser;
 
 namespace MyMovies.Parser
 {
@@ -42,7 +42,7 @@ namespace MyMovies.Parser
             {
                 res = client.GetAsync(href).Result.Content.ReadAsStringAsync().Result;
             }
-            var document = Parser.ParseAsync(res).Result;
+            var document = Parser.ParseDocumentAsync(res).Result;
             return document;
         }
     }

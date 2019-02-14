@@ -1,4 +1,5 @@
-﻿using MyMovies.DAL;
+﻿using Microsoft.EntityFrameworkCore;
+using MyMovies.DAL;
 using MyMovies.Domain.Entities;
 using MyMovies.Domain.Enums;
 using System;
@@ -18,7 +19,7 @@ namespace MyMovies.Parser.DataBase
             var originalYear = movie.Date.Year;
             lock (Context)
             {
-                var movieBase = Context.Movies.FirstOrDefault(x => x.OriginalName == originalName && x.Date.Year == originalYear);
+                var movieBase = Context.Movies.Include(x => x.Rates).FirstOrDefault(x => x.OriginalName == originalName && x.Date.Year == originalYear);
                 if (movieBase == null)
                 {
                     var descriptionBase = Context.Descriptions.FirstOrDefault(x => x.Language == description.Language && x.MovieName == description.MovieName);
@@ -29,18 +30,40 @@ namespace MyMovies.Parser.DataBase
                     }
                     Context.Movies.Add(movie);
                     Context.Descriptions.Add(description);
+                    Context.Rates.AddRange(movie.Rates);
                     Context.SaveChanges();
                     Interlocked.Increment(ref moviesCount);
                 }
                 else
                 {
-                    if (movieBase.Rate == 0.0M && movie.Rate > 0.0M)
+                    #region Rate
+
+                    var newRates = movieBase.Rates.Join(movie.Rates, x => new { x.UserId, x.RateType }, y => new { y.UserId, y.RateType },
+                        (x, y) =>
+                        {
+                            if (y.Value > 0.0M) x.Value = y.Value;
+                            return x;
+                        });
+
+                    if (newRates.Any())
                     {
-                        movieBase.Rate = movie.Rate;
-                        movieBase.RatedPeople = 1;
-                        Context.Movies.Update(movieBase);
-                        Context.SaveChanges();
+                        foreach (var rate in newRates)
+                        {
+                            Context.Rates.Update(rate);
+                            Context.SaveChanges();
+                        }
                     }
+                    else
+                    {
+                        foreach (var rate in movie.Rates)
+                        {
+                            rate.MovieId = movieBase.Id;
+                        }
+                        Context.Rates.AddRange(movie.Rates);
+                    }
+
+
+                    #endregion
 
                     var descriptionBase = Context.Descriptions.FirstOrDefault(x => x.Language == description.Language && x.MovieName == description.MovieName);
                     if (descriptionBase == null)
@@ -54,6 +77,10 @@ namespace MyMovies.Parser.DataBase
                         descriptionBase.DescriptionText = description.DescriptionText;
                         Context.Descriptions.Update(descriptionBase);
                         Context.SaveChanges();
+                    }
+                    else if (descriptionBase.DescriptionText == description.DescriptionText)
+                    {
+                        //do nothin
                     }
                     else
                     {

@@ -19,13 +19,13 @@ namespace MyMovies.Parser.Sites
         public static void ParseKinogo()
         {
             var client = new HttpClient(new HttpClientHandler() { CookieContainer = new CookieContainer() })
-            { BaseAddress = new Uri("http://kinogo.cc/multfilmy/") };
+            { BaseAddress = new Uri("http://kinogo.cc/multfilmyy/") };
 
             var pages = Convert.ToInt32(client.GetDocument("").QuerySelector(".bot-navigation a:nth-last-child(2)").TextContent);
 
             for (var i = 1; i < pages; i++)
             {
-                ParseKinogoPage(ref client, $"page/{i}/");
+                ParseKinogoPage(ref client, $"{client.BaseAddress}page/{i}/");
             }
 
             Console.WriteLine($"Added {Movies} movies");
@@ -34,7 +34,7 @@ namespace MyMovies.Parser.Sites
 
         private static void ParseKinogoPage(ref HttpClient client, string href)
         {
-            var items = client.GetDocument(href)
+            List<string> items = client.GetDocument(href)
                            .QuerySelectorAll("h2.zagolovki a")
                            .Select(x => x.GetAttribute("href")).ToList();
             if (items.Any())
@@ -60,7 +60,7 @@ namespace MyMovies.Parser.Sites
                     if (node.GetType().FullName == "AngleSharp.Dom.Comment")
                         continue;
                     else
-                    if (node.GetType().FullName == "AngleSharp.Dom.Html.HtmlBoldElement")
+                    if (node.GetType().FullName == "AngleSharp.Html.Dom.HtmlBoldElement")
                     {
                         cred.Add(node, "");
                     }
@@ -100,11 +100,23 @@ namespace MyMovies.Parser.Sites
                 {
                     Id = Guid.NewGuid(),
                     OriginalName = movieName,
-                    Country = cred.FirstOrDefault(x => x.Key.TextContent == "Страна:").Value.Trim() ?? "",
+                    Country = cred.FirstOrDefault(x => x.Key.TextContent == "Страна:").Value?.Trim() ?? "",
                     Date = date ? ini : DateTime.Now,
                     Duration = TimeSpan.Parse(cred.FirstOrDefault(x => x.Key.TextContent == "Продолжительность:").Value?.Trim().Trim('~').Trim() ?? "0"),
-                    Rate = Convert.ToDecimal(new Regex("[a-zA-Z]+").Replace(rate, ""), CultureInfo.InvariantCulture) / 20.0M
                 };
+                movie.Rates = new List<Rate>()
+                {
+                    new Rate()
+                    {
+                        Value = Convert.ToDecimal(new Regex("[a-zA-Z]+").Replace(rate, ""),
+                                    CultureInfo.InvariantCulture) / 20.0M,
+                        Id = Guid.NewGuid(),
+                        MovieId = movie.Id,
+                        UserId = user.Id,
+                        RateType = RateType.Kinogo
+                    }
+                };
+
                 DbTasks.AddMovieAndDescriptionIntoDb(ref movie, ref Movies, new Description()
                 {
                     Id = Guid.NewGuid(),
