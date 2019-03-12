@@ -1,0 +1,7 @@
+{
+    "editor.tabSize": 2,
+    "editor.formatOnSave": true,
+    "editor.wordWrapColumn": 160,
+    "vetur.format.defaultFormatter.html": "prettier",
+    "prettier.arrowParens": "always",
+}

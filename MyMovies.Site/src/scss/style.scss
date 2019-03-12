@@ -1,0 +1,97 @@
+$toolbar-size: 36px;
+$tile-size: 28px;
+$btn-size: 32px;
+
+.application--wrap > main.v-content{
+    padding-top: $toolbar-size !important;
+    .v-content__wrap{
+        padding-left: 8px;              
+    }
+}
+.application--wrap{
+    .v-navigation-drawer{               
+        margin-top: $toolbar-size !important;
+    }
+}
+
+@import "_ui-toolbar";
+
+
+
+.v-menu__content{ 
+    .v-toolbar__items{  
+        padding: 8px 0 0 4px;
+        
+        .v-btn{
+            font-weight: initial;
+            text-transform: initial;
+            min-width: $tile-size;
+            height: $tile-size !important;
+            padding: 0 4px;            
+        }     
+    }
+    hr{
+        height: 1px;
+        border: none;
+        border-top: solid 1px #CFD8DC;
+        margin: 0px 4px;
+    }
+    
+}
+
+.ui-list{
+    .v-list__tile{
+        height: $tile-size;
+        padding: 0 8px;
+    }
+    .v-list__tile__action{
+        min-width: 36px;
+    }
+    .v-subheader{
+        height: initial;
+        font-size: 12px;
+        border-top: solid 1px #CFD8DC;
+        margin: 4px 4px 0;
+        padding: 0;
+    }
+}
+
+.ui-card{
+    .v-card__title{
+        font-size: 16px;
+        background-color: #223a5e;
+        color: white;
+        padding: 4px 8px;        
+        img{
+            margin: -4px 0;
+            padding-right: 4px;
+        }
+    }
+    .v-card__text{
+        padding: 4px 8px;
+        .v-input{
+            .v-messages{
+                min-height: 0px;
+            }
+        }
+    }
+    .v-card__actions{
+        padding: 4px 8px;
+        .v-btn{
+            padding: 0 8px;
+            min-width: $btn-size;
+            height: $btn-size;
+            text-transform: none;
+        }
+        .v-btn[type=submit]{
+            text-transform: uppercase;
+        }
+    }
+}
+
+.v-list--dense{
+    .v-list__tile{
+        height: 32px !important;
+        font-size: 16px;
+    }
+}
