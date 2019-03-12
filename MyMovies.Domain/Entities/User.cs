@@ -1,8 +1,6 @@
-﻿using System;
+﻿using MyMovies.Domain.Enums;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using MyMovies.Domain.Enums;
 
 namespace MyMovies.Domain.Entities
 {
@@ -16,7 +14,7 @@ namespace MyMovies.Domain.Entities
         public string Email { get; set; }
         [Required]
         public Language Language { get; set; }
-
-       // public virtual List<User> Friends { get; set; }
+        public virtual List<Role> Roles { get; set; }
+        // public virtual List<User> Friends { get; set; }
     }
 }

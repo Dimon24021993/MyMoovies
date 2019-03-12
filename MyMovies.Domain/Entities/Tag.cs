@@ -1,7 +1,7 @@
-﻿using System;
+﻿using MyMovies.Domain.Enums;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using MyMovies.Domain.Enums;
 
 namespace MyMovies.Domain.Entities
 {

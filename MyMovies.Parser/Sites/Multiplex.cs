@@ -1,6 +1,7 @@
 ﻿using MyMovies.Domain.Entities;
 using MyMovies.Domain.Enums;
 using MyMovies.Parser.DataBase;
+using MyMovies.Parser.Extensions;
 using System;
 using System.Linq;
 using System.Net;

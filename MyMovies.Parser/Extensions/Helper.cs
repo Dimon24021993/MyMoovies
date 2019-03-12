@@ -1,5 +1,9 @@
 ﻿using AngleSharp.Dom;
 using System;
+using System.Net.Http;
+using System.Text;
+using System.Threading;
+using AngleSharp.Html.Dom;
 
 namespace MyMovies.Parser.Extensions
 {
@@ -18,6 +22,21 @@ namespace MyMovies.Parser.Extensions
             {
                 return "";
             }
+        }
+        public static IHtmlDocument GetDocument(this HttpClient client, string href, string charset = null)
+        {
+            var res = "";
+            if (charset != null)
+            {
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                res = Encoding.UTF8.GetString(Encoding.Convert(Encoding.GetEncoding(charset), Encoding.UTF8, client.GetAsync(href).Result.Content.ReadAsByteArrayAsync().Result));
+            }
+            else
+            {
+                res = client.GetAsync(href).Result.Content.ReadAsStringAsync().Result;
+            }
+            var document = Program.Parser.ParseDocumentAsync(res, new CancellationToken()).Result;
+            return document;
         }
     }
 }

@@ -1,8 +1,6 @@
 ﻿using MyMovies.Domain.Enums;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyMovies.Domain.Entities
 {
@@ -12,8 +10,8 @@ namespace MyMovies.Domain.Entities
         public DateTime Birthday { get; set; }
         public Gender Gender { get; set; }
         public virtual List<Job> Jobs { get; set; }
-        [NotMapped]
-        public virtual List<string> Photos { get; set; }
+        //[NotMapped]
+        public virtual List<Item> Photos { get; set; }
 
     }
 }

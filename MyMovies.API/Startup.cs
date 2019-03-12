@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +12,7 @@ using MyMovies.API.Config;
 using MyMovies.BLL.Interfaces;
 using MyMovies.BLL.Services;
 using MyMovies.DAL;
+using NLog.Extensions.Logging;
 
 namespace MyMovies.API
 {
@@ -36,24 +38,17 @@ namespace MyMovies.API
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
+#if DEBUG
                     options.RequireHttpsMetadata = false;
+#endif
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        // укзывает, будет ли валидироваться издатель при валидации токена
                         ValidateIssuer = true,
-                        // строка, представляющая издателя
                         ValidIssuer = AuthOptions.ISSUER,
-
-                        // будет ли валидироваться потребитель токена
                         ValidateAudience = false,
-                        // установка потребителя токена
                         ValidAudience = AuthOptions.AUDIENCE,
-                        // будет ли валидироваться время существования
                         ValidateLifetime = true,
-
-                        // установка ключа безопасности
                         IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
-                        // валидация ключа безопасности
                         ValidateIssuerSigningKey = true,
                     };
                 });
@@ -63,7 +58,7 @@ namespace MyMovies.API
 
             services.AddTransient<IMoviesService, MoviesService>();
 
-            services.AddDbContext<DataBaseContext>(options => options.UseSqlServer(Configuration.GetSection("Connections")["DataBase"]));
+            services.AddDbContext<DataBaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DataBase")));
 
             services.Configure<IISOptions>(options =>
             {
@@ -87,8 +82,8 @@ namespace MyMovies.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            loggerFactory.AddNLog();
+            // app.UseHttpsRedirection();
 
             if (env.IsDevelopment())
             {
@@ -98,25 +93,29 @@ namespace MyMovies.API
             {
                 app.UseHsts();
             }
+
             app.UseSwagger(settings =>
             {
                 settings.DocumentName = "v1";
                 settings.Path = "/swagger/{documentName}/swagger.json";
 
             });
-            app.UseSwaggerUI(c =>
+            app.UseSwaggerUi3(settings => { })/*(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "MyMovies API V1");
-            });
-            app.UseHttpsRedirection();
+            })*/;
+            app.UseRewriter(new RewriteOptions()
+                .AddRedirectToHttps()
+                .AddRedirectToHttpsPermanent()
+                .AddRedirect("^/?$", "/swagger"));
+
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                        name: "default",
-                        template: "{controller=Home}/{action=Index}/{id?}");
-
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

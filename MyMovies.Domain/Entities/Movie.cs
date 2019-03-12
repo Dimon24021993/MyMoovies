@@ -14,5 +14,7 @@ namespace MyMovies.Domain.Entities
         public virtual List<Tag> Tags { get; set; }
         public virtual List<Description> Descriptions { get; set; }
         public virtual List<Rate> Rates { get; set; }
+        public virtual List<Item> Items { get; set; }
+        public virtual List<Picture> Pictures { get; set; }
     }
 }
