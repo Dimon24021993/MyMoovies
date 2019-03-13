@@ -1,25 +1,12 @@
 <template>
   <v-layout row wrap>
     <v-dialog value="true" persistent max-width="350">
-      <form
-        v-on:submit.prevent="
-          userLogin1({ data: { comId: companyId, login, pwd } })
-        "
-      >
+      <form v-on:submit.prevent="userLogin({ data: { login, password } })">
         <v-card class="ui-card">
           <v-card-title>
             <img src="/img/logo.png" height="32" /> Авторизація
           </v-card-title>
           <v-card-text>
-            <v-select
-              label="Компанія"
-              autocomplete:true
-              :items="companies"
-              item-text="name"
-              item-value="comId"
-              v-model="companyId"
-              dense
-            />
             <v-text-field
               name="login"
               v-model="login"
@@ -29,7 +16,7 @@
             ></v-text-field>
             <v-text-field
               name="Password"
-              v-model="pwd"
+              v-model="password"
               label="Пароль"
               placeholder=" "
               type="password"
@@ -60,39 +47,19 @@ import { mapState, mapActions } from "vuex";
 export default {
   data: () => ({
     login: "",
-    pwd: ""
+    password: ""
     // dialog: true,
   }),
-  created() {
-    this.getAllCompanies();
-  },
-
-  computed: {
-    ...mapState({
-      companies: state => state.company.companies,
-      comId: state => state.stored.comId
-    }),
-    companyId: {
-      get() {
-        return this.comId;
-      },
-      set(value) {
-        this.setCompany(value);
-      }
-    }
-  },
+  created() {},
 
   methods: {
     ...mapActions({
-      getAllCompanies: "company/allCompanies",
       userLogin: "stored/login",
-      userLogout: "stored/userLogout",
-      setCompany: "stored/setCompany"
+      userLogout: "stored/userLogout"
     }),
     userLogin1(data) {
-      window.console.log(this.userLogin.toString());
       this.userLogin({
-        data: { comId: this.companyId, login: this.login, pwd: this.pwd }
+        data: { login: this.login, password: this.password }
       });
     }
   }

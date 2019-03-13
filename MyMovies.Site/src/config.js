@@ -8,7 +8,7 @@ const config = {
     // },
     imgUrl: "http://b2b.ad.ua/img",
     imgContentUrl: "http://b2b.ad.ua/img/content",
-    baseApiUrl: "http://localhost:1849/api",
+    baseApiUrl: "https://localhost:44379/api",
 }
 
 export default config;

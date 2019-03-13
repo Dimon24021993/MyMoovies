@@ -57,6 +57,7 @@ namespace MyMovies.API
             //services.AddTransient<IUserService, UserService>();
 
             services.AddTransient<IMoviesService, MoviesService>();
+            services.AddTransient<IUserService, UserService>();
 
             services.AddDbContext<DataBaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DataBase")));
 
@@ -93,7 +94,10 @@ namespace MyMovies.API
             {
                 app.UseHsts();
             }
-
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin().AllowCredentials().Build();
+            });
             app.UseSwagger(settings =>
             {
                 settings.DocumentName = "v1";

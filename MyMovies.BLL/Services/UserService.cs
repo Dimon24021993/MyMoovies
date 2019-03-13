@@ -1,4 +1,5 @@
-﻿using MyMovies.BLL.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using MyMovies.BLL.Interfaces;
 using MyMovies.DAL;
 using MyMovies.Domain.Entities;
 using System;
@@ -9,82 +10,76 @@ using System.Threading.Tasks;
 
 namespace MyMovies.BLL.Services
 {
-    public sealed class MoviesService : EntitiesService, IMoviesService
+    public sealed class UserService : EntitiesService, IUserService
     {
-        public MoviesService(DataBaseContext context) : base(context)
+        private DataBaseContext Context { get; set; }
+        public UserService(DataBaseContext context) : base(context)
         {
-
+            Context = context;
         }
 
-        public async Task<Movie> GetMovieAsync(Guid movieId, bool getFullInfo = false)
+        public async Task<User> GetUserAsync(Guid id)
         {
-            var Movie = await GetByIdAsync(
-                movieId,
-                new List<Expression<Func<Movie, object>>>
+            var user = await GetByIdAsync(id,
+                new List<Expression<Func<User, object>>>
                 {
-                    x => x.Descriptions,
-                    x => x.Tags,
+                    x => x.Roles
                 });
 
-            if (getFullInfo && Movie != null)
-            {
-                Movie.Jobs = (await GetListAsync(
-                    new List<Expression<Func<Job, bool>>>
-                    {
-                        x => x.MovieId == Movie.Id
-                    }, new List<Expression<Func<Job, object>>>
-                    {
-                        x=>x.Person
-                    })).ToList();
-            }
-
-            return Movie;
+            return user;
         }
 
-        public async Task<ICollection<Movie>> GetMoviesAsync(IEnumerable<Guid> ids)
+        public async Task<User> GetUserAsync(string login, string password)
         {
-            return await GetListAsync(
-                new List<Expression<Func<Movie, bool>>>
-                {
-                    x => ids.Any(id => id == x.Id)
-                }, new List<Expression<Func<Movie, object>>>
-                {
-                    x => x.Descriptions,
-                    x=>x.Jobs,
-                    x=>x.Tags
-                });
+            var user = await Context.Users.Include(x => x.Roles)
+                .FirstOrDefaultAsync(x => x.Login == login && x.Password == password);
+            return user;
         }
 
-        public async Task<ICollection<Movie>> GetMoviesAsync(bool getFullInfo = false)
-        {
-            var Movies = (await GetListAsync(
-                null,
-                getFullInfo
-                    ? new List<Expression<Func<Movie, object>>>
-                    {
-                        x => x.Descriptions,
-                        x => x.Tags,
-                        x => x.Jobs
-                    }
-                    : null)).ToList();
+        //public async Task<ICollection<Movie>> GetMoviesAsync(IEnumerable<Guid> ids)
+        //{
+        //    return await GetListAsync(
+        //        new List<Expression<Func<Movie, bool>>>
+        //        {
+        //            x => ids.Any(id => id == x.Id)
+        //        }, new List<Expression<Func<Movie, object>>>
+        //        {
+        //            x => x.Descriptions,
+        //            x=>x.Jobs,
+        //            x=>x.Tags
+        //        });
+        //}
 
-            if (getFullInfo && Movies != null && Movies.Any())
-            {
-                foreach (var Movie in Movies)
-                {
-                    Movie.Jobs = (await GetListAsync(
-                        new List<Expression<Func<Job, bool>>>
-                        {
-                            x => x.MovieId == Movie.Id
-                        }, new List<Expression<Func<Job, object>>>
-                        {
-                            x=>x.Person
-                        })).ToList();
-                }
-            }
+        //public async Task<ICollection<Movie>> GetMoviesAsync(bool getFullInfo = false)
+        //{
+        //    var Movies = (await GetListAsync(
+        //        null,
+        //        getFullInfo
+        //            ? new List<Expression<Func<Movie, object>>>
+        //            {
+        //                x => x.Descriptions,
+        //                x => x.Tags,
+        //                x => x.Jobs
+        //            }
+        //            : null)).ToList();
 
-            return Movies;
-        }
+        //    if (getFullInfo && Movies != null && Movies.Any())
+        //    {
+        //        foreach (var Movie in Movies)
+        //        {
+        //            Movie.Jobs = (await GetListAsync(
+        //                new List<Expression<Func<Job, bool>>>
+        //                {
+        //                    x => x.MovieId == Movie.Id
+        //                }, new List<Expression<Func<Job, object>>>
+        //                {
+        //                    x=>x.Person
+        //                })).ToList();
+        //        }
+        //    }
+
+        //    return Movies;
+        //}
 
         //public async Task<MovieFilterResult> GetPaggedAsync(MovieFilterBindingModel model)
         //{

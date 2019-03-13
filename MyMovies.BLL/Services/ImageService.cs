@@ -1,10 +1,11 @@
-﻿using System.IO;
+﻿using MyMovies.BLL.Interfaces;
+using MyMovies.DAL;
+using System.IO;
 using System.Threading.Tasks;
-using MyMovies.BLL.Interfaces;
 
 namespace MyMovies.BLL.Services
 {
-    public class ImageService: IImageService
+    public class ImageService : EntitiesService, IImageService
     {
         private static string CarImagesPath => "";
         private static string ExternalDiagPath => "";
@@ -57,6 +58,10 @@ namespace MyMovies.BLL.Services
             {
                 await fs.WriteAsync(imageBytes, 0, imageBytes.Length);
             }
+        }
+
+        protected ImageService(DataBaseContext context) : base(context)
+        {
         }
     }
 }

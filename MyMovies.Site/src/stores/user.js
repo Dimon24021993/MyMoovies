@@ -18,11 +18,11 @@ const user = new Vapi({
     .post({
         action: "login",
         property: "user",
-        path: "/user/login",
+        path: "/account/login",
         onSuccess(state, payload, axios) {
             axios.defaults.headers.common["Authorization"] = "Bearer " + payload.data.token;
             state.user = payload.data;
-            router.push(router.currentRoute.query.ReturnUrl ? router.currentRoute.query.ReturnUrl : "/")
+            router.push(router.currentRoute.query.ReturnUrl ? router.currentRoute.query.ReturnUrl : "/");
         },
         onError(state, error) {
             //error

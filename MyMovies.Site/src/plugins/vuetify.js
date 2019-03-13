@@ -6,8 +6,8 @@ import uk from "vuetify/lib/locale/uk";
 // import ru from "vuetify/lib/locale/ru";
 
 Vue.use(Vuetify, {
-  theme:{
-    primary: "#223a5e"
+  theme: {
+    primary: "#141414"
   },
   // theme: {
   //   primary: "#223A5E",// "#7F4145", //"#2A3244",
@@ -21,7 +21,9 @@ Vue.use(Vuetify, {
   customProperties: false,
   iconfont: 'mdi',
   lang: {
-    locales: { uk },
+    locales: {
+      uk
+    },
     current: 'uk'
   },
 })

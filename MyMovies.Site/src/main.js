@@ -13,10 +13,10 @@ Vue.use(VueAxios, axios);
 Vue.axios.defaults.baseURL = config.baseApiUrl;
 //axios.defaults.headers.common["Content-Type"] = "application/json";
 axios.interceptors.response.use(
-    function(response) {
+    function (response) {
         return response;
     },
-    function(error) {
+    function (error) {
         if (error.response.status == 401) {
             // window.console.dir(router.currentRoute);
             store.dispatch("stored/userLogout", true);
