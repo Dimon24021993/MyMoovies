@@ -6,16 +6,12 @@ const stored = {
 
     namespaced: true,
     state: {
-        comId: 15,
         item_card: false,
         item_pages: 25,
         content_pages_: 25,
         ...user.state
     },
     mutations: {
-        setCompany(state, id) {
-            state.comId = id;
-        },
         userLogout(state, stay) {
             state.user = {
                 token: ''
@@ -41,9 +37,6 @@ const stored = {
 
     },
     actions: {
-        setCompany(state, id) {
-            state.commit('setCompany', id);
-        },
         userLogout(state, stay) {
             state.commit('userLogout', stay);
         },

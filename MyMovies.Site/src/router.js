@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import HomePage from "@/components/home/HomePage";
-
 import LoginPage from "@/components/auth/LoginPage";
 import AdminPage from '@/components/admin/AdminPage';
 
@@ -33,7 +32,7 @@ export default new Router({
             name: 'admin',
             meta: {
                 auth: true,
-                roles: ['admin']
+                roles: ['Admin']
             },
             component: AdminPage
         }, {
