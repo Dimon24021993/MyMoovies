@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyMovies.DAL;
 
 namespace MyMovies.DAL.Migrations
 {
     [DbContext(typeof(DataBaseContext))]
-    partial class DataBaseContextModelSnapshot : ModelSnapshot
+    [Migration("20190314153937_try1")]
+    partial class try1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,17 +72,17 @@ namespace MyMovies.DAL.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<Guid>("AddByUserId");
+
                     b.Property<string>("Height");
 
                     b.Property<int>("ItemType");
 
-                    b.Property<Guid?>("MovieId");
+                    b.Property<Guid>("MovieId");
 
                     b.Property<Guid?>("PersonId");
 
                     b.Property<int>("SourceType");
-
-                    b.Property<Guid?>("UserId");
 
                     b.Property<string>("Value");
 
@@ -91,8 +93,6 @@ namespace MyMovies.DAL.Migrations
                     b.HasIndex("MovieId");
 
                     b.HasIndex("PersonId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Items");
                 });
@@ -293,15 +293,12 @@ namespace MyMovies.DAL.Migrations
                 {
                     b.HasOne("MyMovies.Domain.Entities.Movie", "Movie")
                         .WithMany("Items")
-                        .HasForeignKey("MovieId");
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("MyMovies.Domain.Entities.Person", "Person")
                         .WithMany("Photos")
                         .HasForeignKey("PersonId");
-
-                    b.HasOne("MyMovies.Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("MyMovies.Domain.Entities.Job", b =>

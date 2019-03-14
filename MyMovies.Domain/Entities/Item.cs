@@ -8,13 +8,16 @@ namespace MyMovies.Domain.Entities
     {
         public ItemType ItemType { get; set; }
         public SourceType SourceType { get; set; }
-        public Guid AddByUserId { get; set; }
 
-        public Guid MovieId { get; set; }
+        public Guid? UserId { get; set; }
+        [ForeignKey("UserId")]
+        public virtual User User { get; set; }
+
+        public Guid? MovieId { get; set; }
         [ForeignKey("MovieId")]
         public virtual Movie Movie { get; set; }
 
-        public Guid PersonId { get; set; }
+        public Guid? PersonId { get; set; }
         [ForeignKey("PersonId")]
         public virtual Person Person { get; set; }
 
