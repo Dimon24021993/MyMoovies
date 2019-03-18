@@ -3,6 +3,7 @@ using MyMovies.Domain.Enums;
 using MyMovies.Parser.DataBase;
 using MyMovies.Parser.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -33,11 +34,11 @@ namespace MyMovies.Parser.Sites
             Console.WriteLine("Done Parse Multiplex!");
         }
 
-        private static void ParseMultiplexMovie(ref HttpClient client, string x)
+        private static void ParseMultiplexMovie(ref HttpClient client, string href)
         {
             try
             {
-                var document = client.GetDocument(x);
+                var document = client.GetDocument(href);
                 var movieName = document.QuerySelector("h1").TextContent;
                 var results = document
                     .QuerySelectorAll("ul.movie_credentials li")
@@ -73,7 +74,18 @@ namespace MyMovies.Parser.Sites
                             ?.TextContent.Trim() ?? DateTime.Now.ToString("d")),
                     Duration = TimeSpan.Parse(results.FirstOrDefault(cred => cred.Key == "Длительность:").Value
                                                   ?.LastElementChild?.TextContent.Trim() ?? "0"),
+
                 };
+                movie.Rates = results.Where(y => y.Key == "Рейтинг Imdb:" || y.Key == "Рейтинг Kinopoisk:").Select(cr =>
+                    new Rate()
+                    {
+                        Id = Guid.NewGuid(),
+                        MovieId = movie.Id,
+                        Value = Convert.ToDecimal(cr.Value),
+                        UserId = user.Id,
+                        RateType = cr.Key.Contains("Kinopoisk") ? RateType.Kinopoisk : cr.Key.Contains("Imdb") ? RateType.Imdb : RateType.Multiplex
+                    }
+                ).ToList();
 
                 DbTasks.AddMovieAndDescriptionIntoDb(ref movie, ref Movies, new Description()
                 {
@@ -120,6 +132,88 @@ namespace MyMovies.Parser.Sites
                 DbTasks.AddTagsIntoDb(
                     results.FirstOrDefault(cred => cred.Key == "Жанр:").Value?.LastElementChild.Children
                         .Select(item => item.TextContent), Language.Ru, movie.Id);
+
+                #endregion
+
+                #region Pictures
+
+                var pictureHref = document.QuerySelector(".poster")?.GetAttribute("src") ?? "";
+                if (!string.IsNullOrWhiteSpace(pictureHref)) pictureHref = client.BaseAddress.AbsoluteUri + pictureHref;
+
+                var picture = new Picture()
+                {
+                    Id = Guid.NewGuid(),
+                    MovieId = movie.Id,
+                    Name = pictureHref.Split("/").Last(),
+                    Href = pictureHref,
+                    Sort = 1,
+                    SourceType = SourceType.Multiplex,
+                    Type = PictureType.Poster
+                };
+                var pictureHref2 = document.QuerySelector("#mvi_poster")?.GetAttribute("value") ?? "";
+                if (!string.IsNullOrWhiteSpace(pictureHref2)) pictureHref2 = client.BaseAddress.AbsoluteUri + pictureHref2;
+
+                var picture2 = new Picture()
+                {
+                    Id = Guid.NewGuid(),
+                    MovieId = movie.Id,
+                    Name = pictureHref2.Split("/").Last(),
+                    Href = pictureHref2,
+                    Sort = 1,
+                    SourceType = SourceType.Multiplex,
+                    Type = PictureType.Poster
+                };
+                var pictureHref3 = document.QuerySelector(".movie_mask")?.GetStyle("background")?.Replace("url('", "").Replace("')", "").Trim() ?? "";
+                if (!string.IsNullOrWhiteSpace(pictureHref3)) pictureHref3 = client.BaseAddress.AbsoluteUri + pictureHref3;
+
+                var picture3 = new Picture()
+                {
+                    Id = Guid.NewGuid(),
+                    MovieId = movie.Id,
+                    Name = pictureHref3.Split("/").Last(),
+                    Href = pictureHref3,
+                    Sort = 1,
+                    SourceType = SourceType.Multiplex,
+                    Type = PictureType.BackGroung
+                };
+                DbTasks.AddPictures(new List<Picture> { picture, picture2, picture3 });
+
+                var trailer = document.QuerySelector("#desktop_trailer")?.GetAttribute("data-fullyturl") ?? "";
+                var review = document.QuerySelector("#desktop_review")?.GetAttribute("data-fullyturl") ?? "";
+
+                var items = new List<Item>();
+                if (!string.IsNullOrWhiteSpace(trailer))
+                    items.Add(
+                        new Item()
+                        {
+                            Id = Guid.NewGuid(),
+                            Value = trailer,
+                            ItemType = ItemType.Trailer,
+                            MovieId = movie.Id,
+                            SourceType = SourceType.Multiplex,
+
+                        }
+                    );
+                if (!string.IsNullOrWhiteSpace(review))
+                    items.Add(
+                        new Item()
+                        {
+                            Id = Guid.NewGuid(),
+                            Value = review,
+                            ItemType = ItemType.Review,
+                            MovieId = movie.Id,
+                            SourceType = SourceType.Multiplex,
+                        }
+                    );
+                items.Add(new Item()
+                {
+                    Id = Guid.NewGuid(),
+                    Value = href,
+                    ItemType = ItemType.Link,
+                    MovieId = movie.Id,
+                    SourceType = SourceType.Multiplex,
+                });
+                DbTasks.AddItems(items);
 
                 #endregion
             }

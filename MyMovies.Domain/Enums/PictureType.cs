@@ -5,6 +5,7 @@
         NotSet,
         Poster,
         Banner,
-        Preview
+        Preview,
+        BackGroung
     }
 }

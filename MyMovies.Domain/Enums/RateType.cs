@@ -4,6 +4,8 @@
     {
         User,
         Kinogo,
-        Multiplex
+        Multiplex,
+        Imdb,
+        Kinopoisk
     }
 }

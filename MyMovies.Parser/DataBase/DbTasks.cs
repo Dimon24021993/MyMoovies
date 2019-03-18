@@ -179,5 +179,44 @@ namespace MyMovies.Parser.DataBase
                 }
             }
         }
+
+        public static void AddPictures(IEnumerable<Picture> pictures)
+        {
+            if (pictures == null || !pictures.Any()) return;
+
+            lock (Context)
+            {
+                foreach (var picture in pictures)
+                {
+                    var basePicture = Context.Pictures.FirstOrDefault(p =>
+                        p.MovieId == picture.MovieId
+                        && p.Href == picture.Href
+                        && p.Type == picture.Type
+                        && p.SourceType == picture.SourceType);
+                    if (basePicture != null) continue;
+                    Context.Pictures.Add(picture);
+                    Context.SaveChanges();
+                }
+            }
+        }
+
+        public static void AddItems(IEnumerable<Item> items)
+        {
+            if (items == null || !items.Any()) return;
+
+            lock (Context)
+            {
+                foreach (var item in items)
+                {
+                    var baseItem = Context.Items.FirstOrDefault(p =>
+                        p.MovieId == item.MovieId
+                        && p.Value == item.Value
+                        && p.SourceType == item.SourceType);
+                    if (baseItem != null) continue;
+                    Context.Items.Add(item);
+                    Context.SaveChanges();
+                }
+            }
+        }
     }
 }

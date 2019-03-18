@@ -21,7 +21,7 @@ namespace MyMovies.Parser
             var configuration = builder.Build();
 
             DbTasks.Context = new DataBaseContext(new DbContextOptionsBuilder<DataBaseContext>().UseSqlServer(configuration.GetConnectionString("DataBase")).Options);
-            //Multiplex.ParseMultiplex();
+            Multiplex.ParseMultiplex();
             Kinogo.ParseKinogo();
 
             Console.ReadKey();

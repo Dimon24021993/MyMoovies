@@ -1,9 +1,9 @@
 ﻿using AngleSharp.Dom;
+using AngleSharp.Html.Dom;
 using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
-using AngleSharp.Html.Dom;
 
 namespace MyMovies.Parser.Extensions
 {
@@ -14,18 +14,18 @@ namespace MyMovies.Parser.Extensions
             try
             {
                 var style = element.GetAttribute("style");
-                var startIndex = style.IndexOf(":", style.IndexOf(propName) + propName.Length);
-                var res = style.Substring(startIndex + 1, style.IndexOf(";", startIndex) - startIndex - 1);
+                var startIndex = style.IndexOf(":", style.IndexOf(propName, StringComparison.Ordinal) + propName.Length, StringComparison.Ordinal);
+                var res = style.Substring(startIndex + 1, style.IndexOf(";", startIndex, StringComparison.Ordinal) - startIndex - 1);
                 return res;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return "";
             }
         }
         public static IHtmlDocument GetDocument(this HttpClient client, string href, string charset = null)
         {
-            var res = "";
+            string res;
             if (charset != null)
             {
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -37,6 +37,18 @@ namespace MyMovies.Parser.Extensions
             }
             var document = Program.Parser.ParseDocumentAsync(res, new CancellationToken()).Result;
             return document;
+        }
+
+        public static string InnerString(this string source, string startPattern, string endPattern)
+        {
+            if (string.IsNullOrWhiteSpace(source) || string.IsNullOrWhiteSpace(startPattern) ||
+                string.IsNullOrWhiteSpace(endPattern)) return "";
+            var startIndex = source.IndexOf(startPattern, StringComparison.Ordinal);
+            if (startIndex < 0) return "";
+            var endIndex = source.IndexOf(endPattern, startIndex + startPattern.Length, StringComparison.Ordinal);
+            if (endIndex < 0) return "";
+
+            return source.Substring(startIndex + startPattern.Length, endIndex - startIndex - startPattern.Length);
         }
     }
 }

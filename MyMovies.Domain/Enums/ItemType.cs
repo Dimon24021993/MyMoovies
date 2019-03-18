@@ -3,6 +3,7 @@
     public enum ItemType
     {
         Link,
-        Trailer
+        Trailer,
+        Review
     }
 }
