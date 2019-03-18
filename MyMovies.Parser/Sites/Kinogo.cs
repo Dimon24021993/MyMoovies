@@ -24,7 +24,7 @@ namespace MyMovies.Parser.Sites
 
             var pages = Convert.ToInt32(client.GetDocument("").QuerySelector(".bot-navigation a:nth-last-child(2)").TextContent);
 
-            for (var i = 474; i < pages; i++)
+            for (var i = 1; i < pages; i++)
             {
                 ParseKinogoPage(ref client, $"{client.BaseAddress}page/{i}/");
             }
