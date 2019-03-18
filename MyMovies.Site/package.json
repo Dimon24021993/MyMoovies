@@ -67,7 +67,6 @@
         ]
     },
     "vue": {
-        "outputDir": "C:\\inetpub\\Sites\\MyMovies",
         "productionSourceMap": false
     }
 }
