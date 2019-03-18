@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <Menubar v-if="access" />
+    <appNavMenu v-if="access" />
     <v-content>
       <router-view />
     </v-content>
@@ -8,12 +8,12 @@
 </template>
 
 <script>
-import Menubar from "@/components/nav/Menubar";
+import appNavMenu from "@/components/common/app-navMenu";
 
 export default {
   name: "App",
   components: {
-    Menubar
+    appNavMenu
   },
   created: function() {},
   computed: {

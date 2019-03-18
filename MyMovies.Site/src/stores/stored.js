@@ -6,9 +6,8 @@ const stored = {
 
     namespaced: true,
     state: {
-        item_card: false,
-        item_pages: 25,
-        content_pages_: 25,
+        itemPerPage: 25,
+        locale: 'en',
         ...user.state
     },
     mutations: {
@@ -33,12 +32,18 @@ const stored = {
                 }
             }
         },
+        setLocale(state, value) {
+            state.locale = value;
+        },
         ...user.mutations
 
     },
     actions: {
         userLogout(state, stay) {
             state.commit('userLogout', stay);
+        },
+        setLocale(state, value) {
+            state.commit("setLocale", value);
         },
         ...user.actions
     },

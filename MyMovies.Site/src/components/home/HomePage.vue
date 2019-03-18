@@ -11,9 +11,8 @@
 export default {
   methods: {
     test401() {
-      window.console.dir(this.axios);
       this.axios.post("user/test401").then(resp => {
-        console.log(resp);
+        window.console.log(resp);
       });
     }
   }

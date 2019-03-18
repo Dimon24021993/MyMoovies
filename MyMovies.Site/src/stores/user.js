@@ -25,10 +25,4 @@ const user = new Vapi({
     })
     .getStore();
 
-// user.actions = {
-//     logout() {
-//         console.dir(stored.user);
-//     }
-// }
-
 export default user;

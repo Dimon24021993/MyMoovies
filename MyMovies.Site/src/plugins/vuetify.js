@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
+import en from "vuetify/lib/locale/en";
 import uk from "vuetify/lib/locale/uk";
-// import en from "vuetify/lib/locale/en";
-// import ru from "vuetify/lib/locale/ru";
+import ru from "vuetify/lib/locale/ru";
 
 Vue.use(Vuetify, {
   theme: {
@@ -22,8 +22,10 @@ Vue.use(Vuetify, {
   iconfont: 'mdi',
   lang: {
     locales: {
+      en,
+      ru,
       uk
     },
-    current: 'uk'
+    current: 'en'
   },
 })

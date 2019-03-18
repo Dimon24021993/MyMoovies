@@ -8,6 +8,16 @@ import VueAxios from 'vue-axios';
 import store from "./stores";
 import "./scss/style.scss";
 import config from '@/config';
+import VueI18n from "vue-i18n";
+import messages from "./locale/index";
+import 'swiper/dist/css/swiper.css';
+
+Vue.use(VueI18n);
+const i18n = new VueI18n({
+    locale: store.state.stored.locale, // set locale
+    fallbackLocale: "en",
+    messages // set locale messages
+});
 
 Vue.use(VueAxios, axios);
 Vue.axios.defaults.baseURL = config.baseApiUrl;
@@ -18,7 +28,6 @@ axios.interceptors.response.use(
     },
     function (error) {
         if (error.response.status == 401) {
-            // window.console.dir(router.currentRoute);
             store.dispatch("stored/userLogout", true);
             var path = router.currentRoute.path;
             var ignored = ["/login"];
@@ -58,5 +67,6 @@ router.beforeEach((to, from, next) => {
 new Vue({
     router,
     store,
+    i18n,
     render: h => h(App)
 }).$mount("#app");

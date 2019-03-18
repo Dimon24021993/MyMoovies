@@ -1,31 +1,26 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import HomePage from "@/components/home/HomePage";
-import LoginPage from "@/components/auth/LoginPage";
-import AdminPage from '@/components/admin/AdminPage';
-
-
+import homePage from "@/components/home/HomePage";
+import loginPage from "@/components/auth/LoginPage";
+import adminPage from '@/components/admin/AdminPage';
+import siteSettings from '@/components/user/site-settings.vue'
+import aboutPage from '@/components/common/aboutPage'
 
 Vue.use(Router)
 
 export default new Router({
     mode: 'history',
-    base: process.env.BASE_URL,
     routes: [{
             path: '/',
             name: 'home',
-            meta: {
-                auth: true,
-                roles: ['Customer', 'Admin']
-            },
-            component: HomePage
+            component: homePage
         },
         {
             path: '/about',
             name: 'about',
             meta: {},
-            component: HomePage
+            component: aboutPage
         },
         {
             path: '/admin',
@@ -34,10 +29,14 @@ export default new Router({
                 auth: true,
                 roles: ['Admin']
             },
-            component: AdminPage
+            component: adminPage
         }, {
             path: '/login',
-            component: LoginPage
+            component: loginPage
+        }, {
+            path: '/settings',
+            name: 'settings',
+            component: siteSettings
         }
     ]
 });

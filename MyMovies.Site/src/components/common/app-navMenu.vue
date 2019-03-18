@@ -1,9 +1,17 @@
 <template>
   <div>
-    <v-toolbar app clipped-left clipped-right class="ui-toolbar" dense dark color="primary">
-      <v-toolbar-side-icon @click.stop="drawer = !drawer"/>
+    <v-toolbar
+      app
+      clipped-left
+      clipped-right
+      class="ui-toolbar"
+      dense
+      dark
+      color="primary"
+    >
+      <v-toolbar-side-icon @click.stop="drawerChange(!drawer)" />
       <router-link to="/">
-        <img src="/img/logo.png">
+        <img src="/img/logo.png" />
       </router-link>
 
       <v-toolbar-items>
@@ -19,7 +27,7 @@
         <v-menu offset-y right>
           <v-btn flat slot="activator">
             <v-icon>mdi-account</v-icon>
-            {{user.custNo}}
+            {{ user.custNo }}
             <v-icon>mdi-menu-down</v-icon>
           </v-btn>
 
@@ -28,7 +36,7 @@
               <v-icon>mdi-cart</v-icon>
             </v-btn>
           </v-toolbar-items>
-          <hr>
+          <hr />
           <v-list class="ui-list">
             <v-list-tile to="/">
               <v-list-tile-action>
@@ -57,32 +65,13 @@
       </v-toolbar-items>
     </v-toolbar>
 
-    <v-navigation-drawer fixed app clipped v-model="drawer">
-      <v-list class avatar>
-        <v-list-tile to="/">
-          <v-icon>mdi-home</v-icon>
-          {{user.custNo}}
-          <br>
-          {{user.fio}}
-        </v-list-tile>
-      </v-list>
-      <v-list class="ui-list">
-        <v-list-tile to="/">
-          <v-icon>mdi-home</v-icon>home
-        </v-list-tile>
-        <v-list-tile to="/about">about</v-list-tile>
-        <v-list-tile to="/admin">admin</v-list-tile>
-        <v-list-tile to="/login">login</v-list-tile>
-      </v-list>
-      <v-divider/>
-    </v-navigation-drawer>
-    <!-- <Drawer v-model="drawer"/> -->
+    <appDrawer :drawer="drawer" @change="drawerChange" />
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from "vuex";
-// import Drawer from "@/components/nav/Drawer";
+import appDrawer from "@/components/common/app-drawer";
 
 export default {
   data() {
@@ -94,9 +83,12 @@ export default {
   //   value: { type: Boolean, default: false }
   // },
   components: {
-    // Drawer
+    appDrawer
   },
   methods: {
+    drawerChange(value) {
+      this.drawer = value;
+    },
     ...mapActions({
       //   switchDrawer: "tools/switchDrawer"
     })
