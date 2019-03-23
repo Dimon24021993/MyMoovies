@@ -4,4 +4,7 @@
     "editor.wordWrapColumn": 160,
     "vetur.format.defaultFormatter.html": "prettier",
     "prettier.arrowParens": "always",
+    "javascript.referencesCodeLens.enabled": true,
+    "typescript.implementationsCodeLens.enabled": true,
+    "html.format.enable": false,
 }

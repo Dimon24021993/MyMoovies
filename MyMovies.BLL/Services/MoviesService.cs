@@ -1,4 +1,6 @@
-﻿using MyMovies.BLL.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using MyMovies.BLL.BllModels;
+using MyMovies.BLL.Interfaces;
 using MyMovies.DAL;
 using MyMovies.Domain.Entities;
 using System;
@@ -24,6 +26,10 @@ namespace MyMovies.BLL.Services
                 {
                     x => x.Descriptions,
                     x => x.Tags,
+                    x=>x.Items,
+                    x=>x.Pictures,
+                    x=>x.Jobs,
+                    x=>x.Rates
                 });
 
             if (getFullInfo && Movie != null)
@@ -84,6 +90,19 @@ namespace MyMovies.BLL.Services
             }
 
             return Movies;
+        }
+
+        public async Task<IEnumerable<Movie>> GetMovies(Pagination pagination)
+        {
+            return await context.Movies
+                   .Include(x => x.Items)
+                   .Include(x => x.Descriptions)
+                   .Include(x => x.Pictures)
+                   .Include(x => x.Rates)
+                   .Include(x => x.Tags)
+                   .Include(x => x.Jobs)
+                                .ThenInclude(x => x.Person).Skip((pagination.Page - 1) * pagination.Size)
+                                .Take(pagination.Size).ToListAsync();
         }
 
         //public async Task<MovieFilterResult> GetPaggedAsync(MovieFilterBindingModel model)
@@ -493,6 +512,11 @@ namespace MyMovies.BLL.Services
              {
                 x => x.Descriptions
              })).Descriptions;
+        }
+
+        public int TotalCount()
+        {
+            return context.Movies.Count();
         }
     }
 }

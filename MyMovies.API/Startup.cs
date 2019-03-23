@@ -12,6 +12,7 @@ using MyMovies.API.Config;
 using MyMovies.BLL.Interfaces;
 using MyMovies.BLL.Services;
 using MyMovies.DAL;
+using Newtonsoft.Json;
 using NLog.Extensions.Logging;
 
 namespace MyMovies.API
@@ -65,7 +66,9 @@ namespace MyMovies.API
             {
                 options.ForwardClientCertificate = false;
             });
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc()
+                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                    .AddJsonOptions(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 
             //services.AddSwaggerGen(c =>
             //{
