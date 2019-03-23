@@ -1,42 +1,25 @@
 <template>
-  <v-layout>
-    <v-flex>
-      <!-- 
-      <v-btn @click="loadMovies({ data: { size: 10, page: 1 } })">
-        Load Movies
-      </v-btn> 
-      -->
-      <slider :items="movies" :options="options" v-if="movies && movies.length">
-        <v-flex
-          v-for="(item, i) in moviesWithImage"
-          :key="i"
-          :item="item"
-          :slot="`slide${i}`"
-          height="300px"
-          min-width="100px"
-        >
-          <!-- <v-flex  /> -->
-          <!-- <v-img :src="item.image" /> -->
-        </v-flex>
-      </slider>
-      <template v-if="movies && movies.length">
-        <movie-card v-for="(item, i) in movies" :key="i" :item="item">
-          <!-- WithImage -->
-        </movie-card>
-      </template>
-      <!-- <p>{{ pagination1 }}</p> -->
-      <v-pagination
-        v-model="currentPage"
-        :length="pagination.pages"
-        @input="pageChange"
-      ></v-pagination>
-    </v-flex>
-  </v-layout>
+  <v-container grid-list-xl>
+    <v-layout row wrap>
+      <v-flex v-for="(item, i) in movies" :key="i" xs3>
+        <template v-if="movies && movies.length">
+          <movie-card :item="item"> </movie-card>
+        </template>
+      </v-flex>
+      <v-flex>
+        <v-pagination
+          v-model="currentPage"
+          :length="pagination.pages"
+          @input="pageChange"
+        ></v-pagination>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
 import { mapState, mapActions } from "vuex";
-import movieCard from "./MovieCard";
+import movieCard from "./MovieTileCard";
 import slider from "../common/app-slider";
 
 export default {
@@ -46,7 +29,6 @@ export default {
     };
   },
   components: {
-    slider,
     movieCard
   },
   created() {

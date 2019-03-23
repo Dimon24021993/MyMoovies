@@ -13,17 +13,8 @@
         <p>{{ movie.descriptions[0].descriptionText }}</p>
       </v-flex>
       <v-flex v-if="movie.pictures" xs4>
-        <slider
-          :options="options"
-          :items="movie.pictures.filter(x => ![1, 2].includes(x.type))"
-        >
-          <v-flex
-            v-for="(picture, i) in movie.pictures.filter(
-              x => ![1, 2].includes(x.type)
-            )"
-            :key="i"
-            :slot="`slide${i}`"
-          >
+        <slider v-if="screens.length" :options="options" :items="screens">
+          <v-flex v-for="(picture, i) in screens" :key="i" :slot="`slide${i}`">
             <v-img :src="picture.href"></v-img>
           </v-flex>
         </slider>
@@ -49,6 +40,9 @@ export default {
     this.loadMovie({ params: { movieId: this.$route.params.movieId } });
   },
   computed: {
+    screens() {
+      return this.movie.pictures.filter(x => ![1, 2].includes(x.type));
+    },
     videoHref() {
       return this.movie.items.filter(
         x =>
@@ -63,8 +57,7 @@ export default {
       return {
         spaceBetween: 0,
         loop: true,
-        loopedSlides: this.movie.pictures.filter(x => ![1, 2].includes(x.type))
-          .length, //looped slides should be the same
+        loopedSlides: this.screens.length, //looped slides should be the same
         navigation: {
           nextEl: ".swiper-button-next",
           prevEl: ".swiper-button-prev"

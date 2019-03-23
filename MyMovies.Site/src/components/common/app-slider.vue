@@ -1,5 +1,5 @@
 <template>
-  <swiper :options="options" class="gallery">
+  <swiper :options="options" class="gallery" v-if="items.length">
     <swiper-slide
       v-for="(item, index) in items"
       :key="index"
