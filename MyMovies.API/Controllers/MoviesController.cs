@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MyMovies.BLL.BllModels;
 using MyMovies.BLL.Interfaces;
 using MyMovies.DAL;
 using MyMovies.Domain.Entities;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +21,21 @@ namespace MyMovies.API.Controllers
         {
             db = dbContext;
             MoviesService = moviesService;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Pagination>> GetMoviesPagination(Pagination pagination)
+        {
+            try
+            {
+                pagination.Entities = await MoviesService.GetMovies(pagination);
+                pagination.Pages = Convert.ToInt32(Math.Ceiling(MoviesService.TotalCount() / (pagination.Size * 1.0)));
+                return Ok(pagination);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
 
         [HttpGet]
@@ -71,24 +86,22 @@ namespace MyMovies.API.Controllers
             return await MoviesService.GetMovieDescriptions(movieId);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetMovie([FromRoute] Guid id)
+        [HttpGet]
+        public async Task<ActionResult<Movie>> GetMovie(Guid movieId)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var movie = //await _context.Movies.FindAsync(id);
-                await MoviesService.GetMovieAsync(id, true);
+            var movie = await MoviesService.GetMovieAsync(movieId, true);
 
             if (movie == null)
             {
                 return NotFound();
             }
 
-            return Ok(JsonConvert.SerializeObject(movie, Formatting.Indented,
-                new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
+            return Ok(movie);
         }
 
         [HttpPut("{id}")]

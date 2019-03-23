@@ -1,9 +1,7 @@
-import config from "../config";
 import Vapi from "vuex-rest-api";
 import router from "../router";
 
 const user = new Vapi({
-        baseURL: config.baseApiUrl,
         state: {
             user: {}
         }
