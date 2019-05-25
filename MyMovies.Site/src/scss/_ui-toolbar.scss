@@ -1,0 +1,25 @@
+
+.ui-toolbar{
+    line-height: 1;
+    .v-toolbar__content{
+        height: $toolbar-size !important;
+    }
+    .v-toolbar__title{
+        padding-right: 12px;
+        margin: 0;
+    }
+    .v-toolbar__items{        
+        .v-btn{
+            font-weight: initial;
+            text-transform: initial;
+            min-width: $toolbar-size;
+            padding: 0 8px;
+        }
+    }
+    img{
+        max-width: 100%;
+        height: auto;
+        max-height: $toolbar-size;
+        padding: 0;
+    }
+}

@@ -1,0 +1,72 @@
+{
+    "name": "MyMoovies",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "serve": "vue-cli-service serve",
+        "build": "vue-cli-service build",
+        "lint": "vue-cli-service lint"
+    },
+    "dependencies": {
+        "@babel/polyfill": "^7.2.5",
+        "axios": "^0.18.0",
+        "vue": "^2.6.9",
+        "vue-awesome-swiper": "^3.1.3",
+        "vue-axios": "^2.1.4",
+        "vue-i18n": "^8.8.2",
+        "vue-router": "^3.0.2",
+        "vuetify": "^1.5.6",
+        "vuex": "^3.1.0",
+        "vuex-localstorage": "^1.0.0",
+        "vuex-rest-api": "^2.10.0"
+    },
+    "devDependencies": {
+        "@vue/cli-plugin-babel": "^3.4.1",
+        "@vue/cli-plugin-eslint": "^3.5.1",
+        "@vue/cli-service": "^3.5.1",
+        "babel-eslint": "^10.0.1",
+        "eslint": "^5.15.2",
+        "eslint-plugin-vue": "^5.2.2",
+        "node-sass": "^4.11.0",
+        "sass-loader": "^7.1.0",
+        "vue-cli-plugin-vuetify": "^0.4.6",
+        "vue-template-compiler": "^2.6.9"
+    },
+    "eslintConfig": {
+        "root": true,
+        "env": {
+            "node": true
+        },
+        "extends": [
+            "plugin:vue/essential",
+            "eslint:recommended"
+        ],
+        "rules": {},
+        "parserOptions": {
+            "parser": "babel-eslint"
+        }
+    },
+    "postcss": {
+        "plugins": {
+            "autoprefixer": {}
+        }
+    },
+    "browserslist": [
+        "> 1%",
+        "last 2 versions",
+        "not ie <= 10"
+    ],
+    "babel": {
+        "presets": [
+            [
+                "@vue/app",
+                {
+                    "useBuiltIns": "entry"
+                }
+            ]
+        ]
+    },
+    "vue": {
+        "productionSourceMap": false
+    }
+}
