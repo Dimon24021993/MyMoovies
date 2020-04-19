@@ -30,41 +30,11 @@ namespace MyMovies.Parser.DataBase
                     }
                     Context.Movies.Add(movie);
                     Context.Descriptions.Add(description);
-                    Context.Rates.AddRange(movie.Rates);
                     Context.SaveChanges();
                     Interlocked.Increment(ref moviesCount);
                 }
                 else
                 {
-                    #region Rate
-
-                    var newRates = movieBase.Rates.Join(movie.Rates, x => new { x.UserId, x.RateType }, y => new { y.UserId, y.RateType },
-                        (x, y) =>
-                        {
-                            if (y.Value > 0.0M) x.Value = y.Value;
-                            return x;
-                        });
-
-                    if (newRates.Any())
-                    {
-                        foreach (var rate in newRates)
-                        {
-                            Context.Rates.Update(rate);
-                            Context.SaveChanges();
-                        }
-                    }
-                    else
-                    {
-                        foreach (var rate in movie.Rates)
-                        {
-                            rate.MovieId = movieBase.Id;
-                        }
-                        Context.Rates.AddRange(movie.Rates);
-                    }
-
-
-                    #endregion
-
                     var descriptionBase = Context.Descriptions.FirstOrDefault(x => x.Language == description.Language && x.MovieName == description.MovieName);
                     if (descriptionBase == null)
                     {
@@ -214,6 +184,29 @@ namespace MyMovies.Parser.DataBase
                         && p.SourceType == item.SourceType);
                     if (baseItem != null) continue;
                     Context.Items.Add(item);
+                    Context.SaveChanges();
+                }
+            }
+        }
+
+        public static void AddRates(List<Rate> rates)
+        {
+            if (rates == null || !rates.Any()) return;
+
+            lock (Context)
+            {
+                foreach (var rate in rates)
+                {
+                    var baseRate = Context.Rates.FirstOrDefault(p =>
+                        p.MovieId == rate.MovieId
+                        && p.RateType == rate.RateType);
+                    if (baseRate != null)
+                    {
+                        baseRate.Value = rate.Value;
+                        Context.Rates.Update(baseRate);
+                    }
+                    else { Context.Rates.Add(rate); }
+
                     Context.SaveChanges();
                 }
             }

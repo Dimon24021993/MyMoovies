@@ -22,7 +22,7 @@ namespace MyMovies.Parser
 
             DbTasks.Context = new DataBaseContext(new DbContextOptionsBuilder<DataBaseContext>().UseSqlServer(configuration.GetConnectionString("DataBase")).Options);
             Multiplex.ParseMultiplex();
-            Kinogo.ParseKinogo();
+            //Kinogo.ParseKinogo();
 
             Console.ReadKey();
         }

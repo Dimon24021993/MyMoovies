@@ -4,6 +4,7 @@ using MyMovies.Parser.DataBase;
 using MyMovies.Parser.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -19,9 +20,20 @@ namespace MyMovies.Parser.Sites
             { BaseAddress = new Uri("https://multiplex.ua") };
 
             var items = client.GetDocument("/soon")
-                .QuerySelectorAll("a[data-genretype='Кино']")
-                .Select(x => x.GetAttribute("href")).ToList();
-
+                             ?.QuerySelectorAll("a[data-genretype='Кино']")
+                             ?.Select(x => x.GetAttribute("href"))?.ToList();
+            var items2 = client.GetDocument("")
+                              ?.QuerySelectorAll("a.mpp_tomoviepage")
+                              ?.Select(x => x.GetAttribute("href"))?.ToList();
+            if (items != null)
+            {
+                if (items2 != null)
+                    items.AddRange(items2);
+            }
+            else
+            {
+                items = items2;
+            }
             if (items.Any())
             {
 
@@ -30,6 +42,7 @@ namespace MyMovies.Parser.Sites
                     ParseMultiplexMovie(ref client, item);
                 }
             }
+
             Console.WriteLine($"Added {Movies} movies");
             Console.WriteLine("Done Parse Multiplex!");
         }
@@ -76,16 +89,6 @@ namespace MyMovies.Parser.Sites
                                                   ?.LastElementChild?.TextContent.Trim() ?? "0"),
 
                 };
-                movie.Rates = results.Where(y => y.Key == "Рейтинг Imdb:" || y.Key == "Рейтинг Kinopoisk:").Select(cr =>
-                    new Rate()
-                    {
-                        Id = Guid.NewGuid(),
-                        MovieId = movie.Id,
-                        Value = Convert.ToDecimal(cr.Value),
-                        UserId = user.Id,
-                        RateType = cr.Key.Contains("Kinopoisk") ? RateType.Kinopoisk : cr.Key.Contains("Imdb") ? RateType.Imdb : RateType.Multiplex
-                    }
-                ).ToList();
 
                 DbTasks.AddMovieAndDescriptionIntoDb(ref movie, ref Movies, new Description()
                 {
@@ -96,7 +99,23 @@ namespace MyMovies.Parser.Sites
                     UserId = user.Id,
                     DescriptionText = document.QuerySelector(".movie_description").TextContent
                 });
+                
+                #endregion
 
+                #region Rates
+
+                var rates = results.Where(y => y.Key == "Рейтинг Imdb:" || y.Key == "Рейтинг Kinopoisk:").Select(cr =>
+                    new Rate()
+                    {
+                        Id = Guid.NewGuid(),
+                        MovieId = movie.Id,
+                        Value = Convert.ToDecimal(cr.Value.TextContent.Split(":").Last().Trim(), CultureInfo.InvariantCulture),
+                        UserId = user.Id,
+                        RateType = cr.Key.Contains("Kinopoisk") ? RateType.Kinopoisk : cr.Key.Contains("Imdb") ? RateType.Imdb : RateType.Multiplex
+                    }
+                );
+
+                DbTasks.AddRates(rates.ToList());
                 #endregion
 
                 #region Actors
@@ -148,7 +167,7 @@ namespace MyMovies.Parser.Sites
                     Href = pictureHref,
                     Sort = 1,
                     SourceType = SourceType.Multiplex,
-                    Type = PictureType.Poster
+                    Type = PictureType.Banner
                 };
                 var pictureHref2 = document.QuerySelector("#mvi_poster")?.GetAttribute("value") ?? "";
                 if (!string.IsNullOrWhiteSpace(pictureHref2)) pictureHref2 = client.BaseAddress.AbsoluteUri + pictureHref2;

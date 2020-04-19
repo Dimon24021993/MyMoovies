@@ -105,7 +105,18 @@ namespace MyMovies.Parser.Sites
                     Date = date ? ini : DateTime.Now,
                     Duration = TimeSpan.Parse(cred.FirstOrDefault(x => x.Key.TextContent == "Продолжительность:").Value?.Trim().Trim('~').Trim() ?? "0"),
                 };
-                movie.Rates = new List<Rate>()
+
+                DbTasks.AddMovieAndDescriptionIntoDb(ref movie, ref Movies, new Description()
+                {
+                    Id = Guid.NewGuid(),
+                    MovieId = movie.Id,
+                    Language = Language.Ru,
+                    MovieName = movieName,
+                    UserId = user.Id,
+                    DescriptionText = cred.First().Value.Trim()
+                });
+
+                var rates = new List<Rate>()
                 {
                     new Rate()
                     {
@@ -118,15 +129,7 @@ namespace MyMovies.Parser.Sites
                     }
                 };
 
-                DbTasks.AddMovieAndDescriptionIntoDb(ref movie, ref Movies, new Description()
-                {
-                    Id = Guid.NewGuid(),
-                    MovieId = movie.Id,
-                    Language = Language.Ru,
-                    MovieName = movieName,
-                    UserId = user.Id,
-                    DescriptionText = cred.First().Value.Trim()
-                });
+                DbTasks.AddRates(rates);
 
                 #endregion
 
