@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using NLog.Web;
 
 //[assembly: ApiConventionType(typeof(DefaultApiConventions))]
@@ -11,12 +10,13 @@ namespace MyMovies.API
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            CreateHostBuilder(args).Build().Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseNLog()
-                .UseStartup<Startup>();
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args).UseNLog()
+                .ConfigureWebHostDefaults(builder => builder.UseStartup<Startup>());
+        }
     }
 }

@@ -1,14 +1,14 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using MyMovies.BLL.Common;
+using MyMovies.BLL.Exceptions;
+using MyMovies.DAL;
+using MyMovies.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using MyMovies.BLL.Common;
-using MyMovies.BLL.Exceptions;
-using MyMovies.DAL;
-using MyMovies.Domain.Entities;
 
 namespace MyMovies.BLL.Services
 {
@@ -192,6 +192,7 @@ namespace MyMovies.BLL.Services
                 }
             }
         }
+
 
         //public async Task ChangeEntities(ICollection<EntityWrapper> entities)
         //{

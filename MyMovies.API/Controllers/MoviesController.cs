@@ -28,7 +28,7 @@ namespace MyMovies.API.Controllers
         {
             try
             {
-                pagination.Entities = await MoviesService.GetMovies(pagination);
+                pagination.Entities = await MoviesService.GetMovies(pagination).ToListAsync();
                 pagination.Pages = Convert.ToInt32(Math.Ceiling(MoviesService.TotalCount() / (pagination.Size * 1.0)));
                 return Ok(pagination);
             }
@@ -94,7 +94,7 @@ namespace MyMovies.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var movie = await MoviesService.GetMovieAsync(movieId, true);
+            var movie = await MoviesService.GetMovieAsync(movieId);
 
             if (movie == null)
             {

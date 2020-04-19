@@ -1,19 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using MyMovies.API.Config;
 using MyMovies.BLL.Interfaces;
 using MyMovies.BLL.Services;
 using MyMovies.DAL;
 using Newtonsoft.Json;
-using NLog.Extensions.Logging;
 
 namespace MyMovies.API
 {
@@ -66,9 +63,7 @@ namespace MyMovies.API
             {
                 options.ForwardClientCertificate = false;
             });
-            services.AddMvc()
-                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                    .AddJsonOptions(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+            services.AddMvc().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 
             //services.AddSwaggerGen(c =>
             //{
@@ -84,11 +79,8 @@ namespace MyMovies.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            loggerFactory.AddNLog();
-            // app.UseHttpsRedirection();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -97,32 +89,46 @@ namespace MyMovies.API
             {
                 app.UseHsts();
             }
-            app.UseCors(builder =>
-            {
-                builder.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin().AllowCredentials().Build();
-            });
+
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+
             app.UseSwagger(settings =>
             {
                 settings.DocumentName = "v1";
                 settings.Path = "/swagger/{documentName}/swagger.json";
 
             });
-            app.UseSwaggerUi3(settings => { })/*(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "MyMovies API V1");
-            })*/;
+            app.UseSwaggerUi3();
+
             app.UseRewriter(new RewriteOptions()
                 .AddRedirectToHttps()
                 .AddRedirectToHttpsPermanent()
                 .AddRedirect("^/?$", "/swagger"));
 
-            app.UseStaticFiles();
+            app.UseRouting();
+            app.UseCors(builder => builder.AllowAnyMethod().AllowAnyHeader()
+                .WithOrigins(new[] {
+#if true
+                    
+                    "localhost", 
+#endif
+                    "http://api.mymoovies.ga",
+                    "https://api.mymoovies.ga", 
+                    "http://mymoovies.ga",
+                    "https://mymoovies.ga"
+                })
+                .AllowCredentials().Build());
+
             app.UseAuthentication();
-            app.UseMvc(routes =>
+            
+            
+            app.UseAuthorization();
+
+            app.UseEndpoints(builder =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                builder.MapDefaultControllerRoute();
+                builder.MapRazorPages();
             });
         }
     }

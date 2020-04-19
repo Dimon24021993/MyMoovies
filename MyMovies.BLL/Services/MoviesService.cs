@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using MyMovies.BLL.Extensions;
 
 namespace MyMovies.BLL.Services
 {
@@ -18,33 +19,10 @@ namespace MyMovies.BLL.Services
 
         }
 
-        public async Task<Movie> GetMovieAsync(Guid movieId, bool getFullInfo = false)
+        public async Task<Movie> GetMovieAsync(Guid movieId)
         {
-            var Movie = await GetByIdAsync(
-                movieId,
-                new List<Expression<Func<Movie, object>>>
-                {
-                    x => x.Descriptions,
-                    x => x.Tags,
-                    x=>x.Items,
-                    x=>x.Pictures,
-                    x=>x.Jobs,
-                    x=>x.Rates
-                });
-
-            if (getFullInfo && Movie != null)
-            {
-                Movie.Jobs = (await GetListAsync(
-                    new List<Expression<Func<Job, bool>>>
-                    {
-                        x => x.MovieId == Movie.Id
-                    }, new List<Expression<Func<Job, object>>>
-                    {
-                        x=>x.Person
-                    })).ToList();
-            }
-
-            return Movie;
+            var movie = await GetMovies().FirstOrDefaultAsync(x => x.Id == movieId);
+            return movie;
         }
 
         public async Task<ICollection<Movie>> GetMoviesAsync(IEnumerable<Guid> ids)
@@ -92,17 +70,20 @@ namespace MyMovies.BLL.Services
             return Movies;
         }
 
-        public async Task<IEnumerable<Movie>> GetMovies(Pagination pagination)
+        public IQueryable<Movie> GetMovies(Pagination pagination)
         {
-            return await context.Movies
-                   .Include(x => x.Items)
-                   .Include(x => x.Descriptions)
-                   .Include(x => x.Pictures)
-                   .Include(x => x.Rates)
-                   .Include(x => x.Tags)
-                   .Include(x => x.Jobs)
-                                .ThenInclude(x => x.Person).Skip((pagination.Page - 1) * pagination.Size)
-                                .Take(pagination.Size).ToListAsync();
+            return  GetMovies().OrderByDescending(x=>x.Date).Pagination(pagination);
+        }
+        public IQueryable<Movie> GetMovies()
+        {
+            return context.Movies
+                          .Include(x => x.Items)
+                          .Include(x => x.Descriptions)
+                          .Include(x => x.Pictures)
+                          .Include(x => x.Rates)
+                          .Include(x => x.Tags)
+                          .Include(x => x.Jobs)
+                          .ThenInclude(x => x.Person);
         }
 
         //public async Task<MovieFilterResult> GetPaggedAsync(MovieFilterBindingModel model)
