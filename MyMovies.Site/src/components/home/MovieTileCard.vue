@@ -1,12 +1,26 @@
 <template>
-  <v-card hover height="100%" @click="goTo" tile>
-    <v-img :src="item.pictures.filter(x => x.type == 2)[0].href">
-      <span style="color:white" class="body-2">{{ item.rates }}</span>
-      <span style="color:white" class="body-2"></span>
+  <v-card hover height="100%" @click="$router.push(movieHref)" tile>
+    <v-img :src="titleHref">
+      <template v-if="item.rates && item.rates.length">
+        <span
+          v-if="getRate(3)"
+          :style="{ color: 'white', position: 'absolute', left: 0, bottom: 0 }"
+          class="body-2 rate"
+        >
+          Imdb:{{ getRate(3).value }}
+        </span>
+        <span
+          v-if="getRate(4)"
+          :style="{ color: 'white', position: 'absolute', right: 0, bottom: 0 }"
+          class="body-2 rate"
+        >
+          Kinopoisk:{{ getRate(4).value }}
+        </span>
+      </template>
     </v-img>
     <v-card-title class="pa-2">
       <div>
-        <router-link :to="`/movie/${item.id}`">
+        <router-link :to="movieHref">
           {{ item.originalName }}
         </router-link>
         <div>
@@ -25,13 +39,31 @@ export default {
   data() {
     return {};
   },
-  methods: {
-    goTo() {
-      this.$router.push(`/movie/${this.item.id}`);
+  computed: {
+    titleHref() {
+      var a = this.item.pictures.find(x => x.type == 2);
+      return a ? a.href : "";
+    },
+    movieHref() {
+      return `/movie/${this.item.id}`;
     }
+  },
+  methods: {
+    getRate(type) {
+      var a = this.item.rates.find(x => x.rateType == type);
+      return a ? a : undefined;
+    }
+    // goTo() {
+    //   this.;
+    // }
   },
   props: {
     item: { type: Object }
   }
 };
 </script>
+<style>
+.rate {
+  background: #53c70fd3;
+}
+</style>

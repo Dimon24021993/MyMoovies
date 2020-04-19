@@ -4,21 +4,21 @@
       <form v-on:submit.prevent="userLogin({ data: { login, password } })">
         <v-card class="ui-card">
           <v-card-title>
-            <img src="/img/logo.png" height="32" /> Авторизація
+            <img src="/img/logo.png" height="32" /> {{ $t("Auth") }}
           </v-card-title>
           <v-card-text>
             <v-text-field
-              name="login"
+              name="Login"
               v-model="login"
-              label="Логін"
-              placeholder=" "
+              :label="$t('Login')"
+              placeholder=""
               autofocus
             ></v-text-field>
             <v-text-field
               name="Password"
               v-model="password"
-              label="Пароль"
-              placeholder=" "
+              :label="$t('Password')"
+              placeholder=""
               type="password"
             ></v-text-field>
           </v-card-text>
@@ -28,11 +28,16 @@
               flat
               type="button"
               @click.stop="userLogout()"
-              >Logout</v-btn
             >
+              {{ $t("Logout") }}
+            </v-btn>
             <v-spacer></v-spacer>
-            <v-btn color="grey darken-1" flat type="reset">Очистити</v-btn>
-            <v-btn color="green darken-1" flat type="submit">Вхід</v-btn>
+            <v-btn color="grey darken-1" flat type="reset">
+              {{ $t("Clear") }}
+            </v-btn>
+            <v-btn color="green darken-1" flat type="submit">
+              {{ $t("Log in") }}
+            </v-btn>
           </v-card-actions>
         </v-card>
       </form>
@@ -54,8 +59,8 @@ export default {
 
   methods: {
     ...mapActions({
-      userLogin: "stored/login",
-      userLogout: "stored/userLogout"
+      userLogin: "user/login",
+      userLogout: "user/userLogout"
     }),
     userLogin1(data) {
       this.userLogin({

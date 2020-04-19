@@ -16,7 +16,7 @@ import vuex from "vuex";
 
 export default {
   computed: {
-    ...vuex.mapState({ getLocale: state => state.stored.locale }),
+    ...vuex.mapState({ getLocale: state => state.user.locale }),
     locale: {
       get() {
         return this.getLocale;
@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     ...vuex.mapActions({
-      setLocale: "stored/setLocale"
+      setLocale: "user/setLocale"
     }),
     goAway: function() {
       alert(`Your language - ${this.locale}`);

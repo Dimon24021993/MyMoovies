@@ -1,11 +1,8 @@
 <template>
-  <v-card hover class="my-2">
+  <v-card hover>
     <v-layout row>
       <v-flex>
-        <v-img
-          :src="item.pictures.filter(x => x.type == 2)[0].href"
-          width="100px"
-        >
+        <v-img :src="item.pictures.find(x => x.type == 2).href" width="100px">
         </v-img>
       </v-flex>
       <v-flex>

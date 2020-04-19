@@ -22,28 +22,28 @@ export default {
         return (
           !this.$route.meta.auth ||
           (this.$route.meta.auth &&
-            this.$store.state.stored.user.token &&
+            this.$store.state.user.user.token &&
             (!this.$route.meta.roles ||
-              (this.$store.state.stored.user.roles &&
-                this.$store.state.stored.user.roles.some(x =>
+              (this.$store.state.user.user.roles &&
+                this.$store.state.user.user.roles.some(x =>
                   this.$route.meta.roles.includes(x)
                 ))))
         );
       }
     },
     token() {
-      return this.$store.state.stored.user.token;
+      return this.$store.state.user.user.token;
     },
     auth() {
       return this.$route.meta.auth;
     },
     roles() {
-      return this.$store.state.stored.user.roles;
+      return this.$store.state.user.user.roles;
     },
     includes() {
       return (
-        this.$store.state.stored.user.roles &&
-        this.$store.state.stored.user.roles.some(x =>
+        this.$store.state.user.user.roles &&
+        this.$store.state.user.user.roles.some(x =>
           this.$route.meta.roles.includes(x)
         )
       );

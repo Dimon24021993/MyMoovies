@@ -1,0 +1,9 @@
+add vue-youtube-embed // vue-youtube
+add facebook-login-vuejs  // vue-facebook-login-component 
+add vue-telegram-login // vue-telegram-passport 
+
+
+Google Analytics
+vue-ua - Google Universal Analytics support in Vue.js.
+vue-analytics - Vue plugin for Google Analytics.
+vue-gtm - Vue plugin for Google Tag Manager

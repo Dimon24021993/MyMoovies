@@ -1,0 +1,15 @@
+{
+    "year": {
+        "type": "in",
+        "value": [2012, 2010, 1968]
+    },
+    "actors": {
+        "type": "or",
+        "value": ["Mahoni", "Barbara"]
+    },
+    "year1": {
+        "type": "range",
+        "from": 2010,
+        "to": null
+    }
+}

@@ -1,7 +1,7 @@
 <template>
   <v-container grid-list-xl>
     <v-layout row wrap>
-      <v-flex v-for="(item, i) in movies" :key="i" xs3>
+      <v-flex v-for="(item, i) in movies" :key="i" xs6 sm4 md3>
         <template v-if="movies && movies.length">
           <movie-card :item="item"> </movie-card>
         </template>
@@ -20,7 +20,6 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import movieCard from "./MovieTileCard";
-import slider from "../common/app-slider";
 
 export default {
   data() {

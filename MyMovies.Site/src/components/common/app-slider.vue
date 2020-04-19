@@ -1,5 +1,5 @@
-<template>
-  <swiper :options="options" class="gallery" v-if="items.length">
+<template v-if="items.length && options">
+  <swiper :options="options" class="gallery">
     <swiper-slide
       v-for="(item, index) in items"
       :key="index"
@@ -32,8 +32,8 @@ export default {
   },
   methods: {
     getStyle(item) {
-      if (!item) return "";
-      return `background-image: url(${item.image});`;
+      if (item && item.image) return `background-image: url(${item.image});`;
+      return "";
     }
   },
   props: {
